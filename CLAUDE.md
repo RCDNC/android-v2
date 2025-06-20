@@ -42,6 +42,11 @@ android-v2/
 - **Repo limpo** permite IA trabalhar melhor
 - **Estrutura define sucesso** - Clean Architecture from day 1
 
+### ⚠️ REGRAS IMPORTANTES:
+- **ISSUES**: SEMPRE criar no repositório cafezinho principal (não no android-v2)
+- **COMPILAÇÃO**: android-v2 deve ser independente, SEM referências ao projeto legacy
+- **DEPENDÊNCIAS**: Não copiar módulos legacy (como binderStatic) para android-v2
+
 ---
 **📅 Criado: 20/06/2025 01:45**
 **🎯 Status: Projeto android-v2 iniciado com sucesso**
