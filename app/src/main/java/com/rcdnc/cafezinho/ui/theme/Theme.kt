@@ -15,17 +15,42 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+private val CafezinhoDarkColorScheme = darkColorScheme(
+    primary = CafezinhoPrimary,
+    onPrimary = CafezinhoOnPrimary,
+    secondary = CafezinhoMatch,
+    onSecondary = CafezinhoOnPrimary,
+    tertiary = CafezinhoSuperLike,
+    onTertiary = CafezinhoOnPrimary,
+    background = CafezinhoBackgroundDark,
+    onBackground = CafezinhoOnSurfaceDark,
+    surface = CafezinhoSurfaceDark,
+    onSurface = CafezinhoOnSurfaceDark,
+    surfaceVariant = CafezinhoSurfaceVariantDark,
+    onSurfaceVariant = CafezinhoOnSurfaceVariantDark,
+    outline = CafezinhoOutlineDark,
+    outlineVariant = CafezinhoOutlineVariantDark,
+    error = CafezinhoError,
+    onError = CafezinhoOnError
 )
 
-private val LightColorScheme = lightColorScheme(
+private val CafezinhoLightColorScheme = lightColorScheme(
     primary = CafezinhoPrimary,
-    secondary = CafezinhoSecondary,
-    tertiary = Pink40,
-    background = CafezinhoBackground
+    onPrimary = CafezinhoOnPrimary,
+    secondary = CafezinhoMatch,
+    onSecondary = CafezinhoOnPrimary,
+    tertiary = CafezinhoSuperLike,
+    onTertiary = CafezinhoOnPrimary,
+    background = CafezinhoBackground,
+    onBackground = CafezinhoOnSurface,
+    surface = CafezinhoSurface,
+    onSurface = CafezinhoOnSurface,
+    surfaceVariant = CafezinhoSurfaceVariant,
+    onSurfaceVariant = CafezinhoOnSurfaceVariant,
+    outline = CafezinhoOutline,
+    outlineVariant = CafezinhoOutlineVariant,
+    error = CafezinhoError,
+    onError = CafezinhoOnError
 )
 
 @Composable
@@ -40,8 +65,8 @@ fun CafezinhoTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> CafezinhoDarkColorScheme
+        else -> CafezinhoLightColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -54,7 +79,8 @@ fun CafezinhoTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = CafezinhoTypographySystem,
+        shapes = CafezinhoShapes,
         content = content
     )
 }
