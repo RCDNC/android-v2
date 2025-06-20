@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import com.rcdnc.cafezinho.ui.theme.*
 
 /**
@@ -272,5 +273,103 @@ private fun getContentDescription(action: SwipeAction): String {
         SwipeAction.SUPERLIKE -> "Super like"
         SwipeAction.LIKE -> "Curtir"
         SwipeAction.BOOST -> "Boost"
+    }
+}
+
+// Preview functions
+@Preview(name = "SwipeButton - All Actions")
+@Composable
+private fun SwipeButtonPreview() {
+    CafezinhoTheme {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            SwipeButton(
+                action = SwipeAction.REWIND,
+                onClick = { }
+            )
+            SwipeButton(
+                action = SwipeAction.DISLIKE,
+                onClick = { }
+            )
+            SwipeButton(
+                action = SwipeAction.SUPERLIKE,
+                onClick = { }
+            )
+            SwipeButton(
+                action = SwipeAction.LIKE,
+                onClick = { }
+            )
+            SwipeButton(
+                action = SwipeAction.BOOST,
+                onClick = { }
+            )
+        }
+    }
+}
+
+@Preview(name = "SwipeButton - States")
+@Composable
+private fun SwipeButtonStatesPreview() {
+    CafezinhoTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text("Normal")
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                SwipeButton(action = SwipeAction.LIKE, onClick = { })
+                SwipeButton(action = SwipeAction.BOOST, onClick = { })
+            }
+            
+            Text("Disabled")
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                SwipeButton(action = SwipeAction.LIKE, onClick = { }, enabled = false)
+                SwipeButton(action = SwipeAction.BOOST, onClick = { }, enabled = false)
+            }
+            
+            Text("Boost Active")
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                SwipeButton(action = SwipeAction.BOOST, onClick = { }, isActive = true)
+                SwipeButton(action = SwipeAction.BOOST, onClick = { }, isActive = true, progress = 0.7f)
+            }
+        }
+    }
+}
+
+@Preview(name = "SwipeButtonRow")
+@Composable
+private fun SwipeButtonRowPreview() {
+    CafezinhoTheme {
+        SwipeButtonRow(
+            onRewind = { },
+            onDislike = { },
+            onSuperLike = { },
+            onLike = { },
+            onBoost = { },
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview(name = "SwipeOverlay")
+@Composable
+private fun SwipeOverlayPreview() {
+    CafezinhoTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Box(modifier = Modifier.size(200.dp, 300.dp)) {
+                SwipeOverlay(action = SwipeAction.LIKE, opacity = 0.8f)
+            }
+            Box(modifier = Modifier.size(200.dp, 300.dp)) {
+                SwipeOverlay(action = SwipeAction.DISLIKE, opacity = 0.8f)
+            }
+            Box(modifier = Modifier.size(200.dp, 300.dp)) {
+                SwipeOverlay(action = SwipeAction.SUPERLIKE, opacity = 0.8f)
+            }
+        }
     }
 }
