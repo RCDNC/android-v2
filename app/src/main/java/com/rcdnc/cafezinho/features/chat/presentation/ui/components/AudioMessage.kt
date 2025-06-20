@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -74,7 +74,7 @@ fun AudioMessage(
                 shape = CircleShape
             ) {
                 Icon(
-                    imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                    imageVector = if (isPlaying) Icons.Default.Close else Icons.Default.PlayArrow,
                     contentDescription = if (isPlaying) "Pausar" else "Reproduzir",
                     modifier = Modifier.size(20.dp)
                 )
@@ -177,7 +177,7 @@ fun CompactAudioMessage(
             modifier = Modifier.size(32.dp)
         ) {
             Icon(
-                imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                imageVector = if (isPlaying) Icons.Default.Close else Icons.Default.PlayArrow,
                 contentDescription = if (isPlaying) "Pausar" else "Reproduzir",
                 tint = tint,
                 modifier = Modifier.size(16.dp)
@@ -245,10 +245,10 @@ fun AudioRecordingIndicator(
 private fun generateSampleWaveform(size: Int = 40): List<Float> {
     return (0 until size).map {
         // Generate waveform that looks like speech
-        val baseWave = sin(it * 0.3) * 0.5f + 0.5f
+        val baseWave = sin(it * 0.3).toFloat() * 0.5f + 0.5f
         val noise = Random.nextFloat() * 0.3f
         val envelope = if (it < size * 0.1f || it > size * 0.9f) 0.2f else 1.0f
-        ((baseWave + noise) * envelope).coerceIn(0.1f, 1.0f)
+        (baseWave + noise) * envelope
     }
 }
 

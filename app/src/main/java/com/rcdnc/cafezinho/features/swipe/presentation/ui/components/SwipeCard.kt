@@ -3,7 +3,9 @@ package com.rcdnc.cafezinho.features.swipe.presentation.ui.components
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.graphicsLayer
@@ -228,7 +230,7 @@ fun SwipeCardStack(
         // Show up to maxVisibleCards cards
         users.take(maxVisibleCards).forEachIndexed { index, user ->
             val scale = 1f - (index * scaleRatio)
-            val translationY = index * cardSpacing
+            val yOffset = index * cardSpacing
             
             SwipeCard(
                 user = user,
@@ -242,7 +244,7 @@ fun SwipeCardStack(
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
-                        translationY = this@graphicsLayer.translationY + translationY
+                        translationY = yOffset
                     }
             )
         }
@@ -255,27 +257,27 @@ private fun EmptySwipeState(
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
-        contentAlignment = androidx.compose.ui.Alignment.Center
+        contentAlignment = Alignment.Center
     ) {
         Column(
-            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
                 text = "🎉",
-                style = androidx.compose.material3.MaterialTheme.typography.displayLarge
+                style = MaterialTheme.typography.displayLarge
             )
             
             Text(
                 text = "Não há mais pessoas por aqui",
-                style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
-                color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface
             )
             
             Text(
                 text = "Volte mais tarde para ver novos perfis",
-                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
-                color = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

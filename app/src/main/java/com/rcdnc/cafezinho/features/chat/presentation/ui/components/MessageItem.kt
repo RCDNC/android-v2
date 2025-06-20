@@ -11,7 +11,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.rcdnc.cafezinho.domain.model.Message
+import com.rcdnc.cafezinho.features.chat.domain.model.Message
+import com.rcdnc.cafezinho.features.chat.domain.model.MessageType
+import com.rcdnc.cafezinho.features.chat.domain.model.MessageStatus
 import com.rcdnc.cafezinho.ui.components.UserImage
 import com.rcdnc.cafezinho.ui.components.UserImageType
 import com.rcdnc.cafezinho.ui.component.ComponentSize
@@ -165,6 +167,15 @@ private fun MessageBubble(
                         color = textColor
                     )
                 }
+                
+                MessageType.FILE -> {
+                    // TODO: Implement file message
+                    Text(
+                        text = "📎 Arquivo",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = textColor
+                    )
+                }
             }
             
             // Message status (only for sent messages)
@@ -221,24 +232,6 @@ private fun formatMessageTime(timestamp: Long): String {
     return sdf.format(Date(timestamp))
 }
 
-// Temporary models - should be moved to shared module
-data class Message(
-    val id: String,
-    val content: String,
-    val senderId: String,
-    val senderAvatar: String? = null,
-    val timestamp: Long,
-    val type: MessageType = MessageType.TEXT,
-    val status: MessageStatus = MessageStatus.SENT
-)
-
-enum class MessageType {
-    TEXT, IMAGE, AUDIO
-}
-
-enum class MessageStatus {
-    SENDING, SENT, DELIVERED, READ, FAILED
-}
 
 // Preview functions
 @Preview(name = "MessageItem - Conversation")
@@ -258,6 +251,7 @@ private fun MessageItemConversationPreview() {
                     id = "1",
                     content = "Oi! Tudo bem?",
                     senderId = "other",
+                    receiverId = "current",
                     senderAvatar = "https://example.com/avatar.jpg",
                     timestamp = System.currentTimeMillis() - 300000
                 ),
@@ -270,6 +264,7 @@ private fun MessageItemConversationPreview() {
                     id = "2",
                     content = "Como foi seu dia?",
                     senderId = "other",
+                    receiverId = "current",
                     senderAvatar = "https://example.com/avatar.jpg",
                     timestamp = System.currentTimeMillis() - 290000
                 ),
@@ -278,6 +273,7 @@ private fun MessageItemConversationPreview() {
                     id = "1",
                     content = "Oi! Tudo bem?",
                     senderId = "other",
+                    receiverId = "current",
                     timestamp = System.currentTimeMillis() - 300000
                 )
             )
@@ -288,6 +284,7 @@ private fun MessageItemConversationPreview() {
                     id = "3",
                     content = "Oi! Estou bem, obrigado! E você?",
                     senderId = "me",
+                    receiverId = "other",
                     timestamp = System.currentTimeMillis() - 280000,
                     status = MessageStatus.READ
                 ),
@@ -300,6 +297,7 @@ private fun MessageItemConversationPreview() {
                     id = "4",
                     content = "Meu dia foi ótimo! Acabei de chegar do trabalho.",
                     senderId = "me",
+                    receiverId = "other",
                     timestamp = System.currentTimeMillis() - 270000,
                     status = MessageStatus.DELIVERED
                 ),
@@ -308,6 +306,7 @@ private fun MessageItemConversationPreview() {
                     id = "3",
                     content = "Oi! Estou bem, obrigado! E você?",
                     senderId = "me",
+                    receiverId = "other",
                     timestamp = System.currentTimeMillis() - 280000
                 )
             )
@@ -332,6 +331,7 @@ private fun MessageItemStatusPreview() {
                         id = status.name,
                         content = "Mensagem com status: ${status.name}",
                         senderId = "me",
+                        receiverId = "other",
                         timestamp = System.currentTimeMillis(),
                         status = status
                     ),

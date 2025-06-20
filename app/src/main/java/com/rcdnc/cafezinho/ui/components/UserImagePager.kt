@@ -11,8 +11,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIos
-import androidx.compose.material.icons.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -173,7 +173,7 @@ private fun NavigationArrow(
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            imageVector = if (direction < 0) Icons.Default.ArrowBackIos else Icons.Default.ArrowForwardIos,
+            imageVector = if (direction < 0) Icons.Default.KeyboardArrowLeft else Icons.Default.KeyboardArrowRight,
             contentDescription = if (direction < 0) "Previous image" else "Next image",
             tint = Color.White,
             modifier = Modifier.size(20.dp)

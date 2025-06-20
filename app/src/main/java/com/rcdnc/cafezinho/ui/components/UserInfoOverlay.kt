@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Verified
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -78,7 +78,7 @@ fun UserInfoOverlay(
             // Verified badge
             if (isVerified) {
                 Icon(
-                    imageVector = Icons.Default.Verified,
+                    imageVector = Icons.Default.CheckCircle,
                     contentDescription = "Verified user",
                     tint = CafezinhoPrimary,
                     modifier = Modifier.size(20.dp)
@@ -217,7 +217,7 @@ fun CompactUserInfo(
         
         if (isVerified) {
             Icon(
-                imageVector = Icons.Default.Verified,
+                imageVector = Icons.Default.CheckCircle,
                 contentDescription = "Verified user",
                 tint = CafezinhoPrimary,
                 modifier = Modifier.size(16.dp)

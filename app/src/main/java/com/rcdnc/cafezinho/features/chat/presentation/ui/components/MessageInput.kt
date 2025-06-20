@@ -7,7 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AttachFile
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -57,7 +57,7 @@ fun MessageInput(
                     modifier = Modifier.size(40.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.AttachFile,
+                        imageVector = Icons.Default.Add,
                         contentDescription = "Anexar arquivo",
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
