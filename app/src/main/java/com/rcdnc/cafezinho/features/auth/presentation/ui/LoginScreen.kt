@@ -26,10 +26,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rcdnc.cafezinho.R
 import com.rcdnc.cafezinho.features.auth.mvi.AuthIntent
 import com.rcdnc.cafezinho.features.auth.mvi.AuthState
-import com.rcdnc.cafezinho.features.auth.presentation.viewmodel.AuthViewModel
+import com.rcdnc.cafezinho.features.auth.presentation.viewmodel.SimpleAuthViewModel
 import com.rcdnc.cafezinho.ui.components.CafezinhoButton
 import com.rcdnc.cafezinho.ui.theme.CafezinhoTheme
 
@@ -41,14 +43,29 @@ import com.rcdnc.cafezinho.ui.theme.CafezinhoTheme
 @Composable
 fun LoginScreen(
     onNavigateToMain: () -> Unit = {},
-    viewModel: AuthViewModel? = null
+    viewModel: SimpleAuthViewModel? = null
 ) {
+    val context = LocalContext.current
+    val actualViewModel = viewModel ?: remember { SimpleAuthViewModel(context) }
+    val state by actualViewModel.state.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
     
     var phoneNumber by remember { mutableStateOf("") }
     var isPhoneValid by remember { mutableStateOf(false) }
-    var isLoading by remember { mutableStateOf(false) }
-    var showError by remember { mutableStateOf(false) }
+    
+    // Handle state changes
+    LaunchedEffect(state) {
+        when (state) {
+            is AuthState.Authenticated -> {
+                onNavigateToMain()
+            }
+            is AuthState.PhoneVerificationSent -> {
+                // For now, just navigate to main
+                onNavigateToMain()
+            }
+            else -> {}
+        }
+    }
     
     // Simple phone validation
     LaunchedEffect(phoneNumber) {
@@ -85,18 +102,12 @@ fun LoginScreen(
             // Social login buttons
             SocialLoginSection(
                 onGoogleSignIn = { 
-                    isLoading = true
-                    viewModel?.handleIntent(AuthIntent.LoginWithGoogle)
-                    // For demo, navigate immediately after a delay
-                    onNavigateToMain()
+                    actualViewModel.handleIntent(AuthIntent.LoginWithGoogle)
                 },
                 onFacebookSignIn = { 
-                    isLoading = true
-                    viewModel?.handleIntent(AuthIntent.LoginWithFacebook)
-                    // For demo, navigate immediately after a delay
-                    onNavigateToMain()
+                    actualViewModel.handleIntent(AuthIntent.LoginWithFacebook)
                 },
-                isLoading = isLoading
+                isLoading = state is AuthState.GoogleSignInLoading || state is AuthState.FacebookSignInLoading
             )
             
             Spacer(modifier = Modifier.height(32.dp))
@@ -111,24 +122,24 @@ fun LoginScreen(
                 phoneNumber = phoneNumber,
                 onPhoneNumberChange = { phoneNumber = it },
                 isValid = isPhoneValid,
-                isLoading = isLoading,
+                isLoading = state is AuthState.PhoneVerificationLoading,
                 onContinue = {
                     focusManager.clearFocus()
-                    isLoading = true
-                    viewModel?.handleIntent(AuthIntent.SendPhoneVerification(phoneNumber))
-                    // For demo, navigate immediately
-                    onNavigateToMain()
+                    actualViewModel.handleIntent(AuthIntent.SendPhoneVerification(phoneNumber))
                 }
             )
             
             Spacer(modifier = Modifier.height(24.dp))
             
             // Error handling
-            if (showError) {
-                ErrorMessage(
-                    error = "Erro demonstrativo - tudo funciona!",
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
+            when (val currentState = state) {
+                is AuthState.Error -> {
+                    ErrorMessage(
+                        error = currentState.error.message,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+                else -> {}
             }
             
             Spacer(modifier = Modifier.height(32.dp))

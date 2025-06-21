@@ -3,13 +3,12 @@
     <string name="app_name">Cafezinho v2</string>
     
     <!-- Facebook SDK Configuration -->
-    <!-- TODO: Replace with actual Facebook App ID and Client Token -->
-    <string name="facebook_app_id">YOUR_FACEBOOK_APP_ID</string>
-    <string name="facebook_client_token">YOUR_FACEBOOK_CLIENT_TOKEN</string>
+    <string name="facebook_app_id">698732311286992</string>
+    <string name="facebook_client_token">d75574034e035b048a5936a00034b99d</string>
+    <string name="facebook_protocol">fb698732311286992</string>
     
     <!-- Google Services Configuration -->
-    <!-- TODO: Replace with actual Google Web Client ID -->
-    <string name="google_web_client_id">YOUR_GOOGLE_WEB_CLIENT_ID</string>
+    <string name="google_web_client_id">918446856639-8vcp73vhvkm8tni7smq2i08g4gkit7b4.apps.googleusercontent.com</string>
     
     <!-- Authentication Strings -->
     <string name="auth_google_sign_in">Entrar com Google</string>
