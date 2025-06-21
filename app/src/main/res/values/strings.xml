@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Cafezinho v2</string>
+    
+    <!-- Facebook SDK Configuration -->
+    <!-- TODO: Replace with actual Facebook App ID and Client Token -->
+    <string name="facebook_app_id">YOUR_FACEBOOK_APP_ID</string>
+    <string name="facebook_client_token">YOUR_FACEBOOK_CLIENT_TOKEN</string>
+    
+    <!-- Google Services Configuration -->
+    <!-- TODO: Replace with actual Google Web Client ID -->
+    <string name="google_web_client_id">YOUR_GOOGLE_WEB_CLIENT_ID</string>
+    
+    <!-- Authentication Strings -->
+    <string name="auth_google_sign_in">Entrar com Google</string>
+    <string name="auth_facebook_sign_in">Entrar com Facebook</string>
+    <string name="auth_phone_verification">Verificação por SMS</string>
+    <string name="auth_enter_phone">Digite seu número de telefone</string>
+    <string name="auth_enter_otp">Digite o código de verificação</string>
+    <string name="auth_resend_otp">Reenviar código</string>
+    <string name="auth_continue">Continuar</string>
+    <string name="auth_skip">Pular</string>
+    <string name="auth_loading">Carregando…</string>
+    
+    <!-- Error Messages -->
+    <string name="error_network">Erro de conexão. Verifique sua internet.</string>
+    <string name="error_invalid_phone">Número de telefone inválido.</string>
+    <string name="error_invalid_otp">Código de verificação inválido.</string>
+    <string name="error_otp_expired">Código de verificação expirado.</string>
+    <string name="error_too_many_requests">Muitas tentativas. Tente novamente mais tarde.</string>
+    <string name="error_unknown">Erro inesperado. Tente novamente.</string>
 </resources>

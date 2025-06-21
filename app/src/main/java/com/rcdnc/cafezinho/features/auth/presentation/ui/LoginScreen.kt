@@ -1,0 +1,363 @@
+package com.rcdnc.cafezinho.features.auth.presentation.ui
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+// import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.rcdnc.cafezinho.R
+import com.rcdnc.cafezinho.features.auth.mvi.AuthIntent
+import com.rcdnc.cafezinho.features.auth.mvi.AuthState
+import com.rcdnc.cafezinho.features.auth.presentation.viewmodel.AuthViewModel
+import com.rcdnc.cafezinho.ui.components.CafezinhoButton
+import com.rcdnc.cafezinho.ui.theme.CafezinhoTheme
+
+/**
+ * Login screen with social authentication and phone verification options
+ * Follows Material 3 design with brand colors and modern UI patterns
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LoginScreen(
+    onNavigateToPhoneVerification: (String) -> Unit = {},
+    onNavigateToMain: () -> Unit = {},
+    viewModel: AuthViewModel? = null // = hiltViewModel()
+) {
+    val state by viewModel?.state?.collectAsStateWithLifecycle() ?: remember { mutableStateOf(AuthState.Idle) }
+    val focusManager = LocalFocusManager.current
+    
+    var phoneNumber by remember { mutableStateOf("") }
+    var isPhoneValid by remember { mutableStateOf(false) }
+    
+    // Handle state changes
+    LaunchedEffect(state) {
+        when (state) {
+            is AuthState.PhoneVerificationSent -> {
+                onNavigateToPhoneVerification(state.phoneNumber)
+            }
+            is AuthState.Authenticated -> {
+                onNavigateToMain()
+            }
+            else -> {}
+        }
+    }
+    
+    // Validate phone number
+    LaunchedEffect(phoneNumber) {
+        isPhoneValid = phoneNumber.length >= 10 && phoneNumber.all { it.isDigit() || it == '+' || it == '(' || it == ')' || it == '-' || it == ' ' }
+    }
+    
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                        MaterialTheme.colorScheme.background
+                    )
+                )
+            )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            
+            Spacer(modifier = Modifier.height(60.dp))
+            
+            // Logo and welcome text
+            LogoSection()
+            
+            Spacer(modifier = Modifier.height(48.dp))
+            
+            // Social login buttons
+            SocialLoginSection(
+                onGoogleSignIn = { 
+                    viewModel?.handleIntent(AuthIntent.LoginWithGoogle)
+                },
+                onFacebookSignIn = { 
+                    viewModel?.handleIntent(AuthIntent.LoginWithFacebook)
+                },
+                isLoading = state is AuthState.GoogleSignInLoading || state is AuthState.FacebookSignInLoading
+            )
+            
+            Spacer(modifier = Modifier.height(32.dp))
+            
+            // Divider with "ou" text
+            DividerWithText(text = "ou")
+            
+            Spacer(modifier = Modifier.height(32.dp))
+            
+            // Phone number input
+            PhoneInputSection(
+                phoneNumber = phoneNumber,
+                onPhoneNumberChange = { phoneNumber = it },
+                isValid = isPhoneValid,
+                isLoading = state is AuthState.PhoneVerificationLoading,
+                onContinue = {
+                    focusManager.clearFocus()
+                    viewModel?.handleIntent(AuthIntent.SendPhoneVerification(phoneNumber))
+                }
+            )
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            // Error handling
+            if (state is AuthState.Error) {
+                ErrorMessage(
+                    error = state.error.message,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(32.dp))
+            
+            // Terms and privacy
+            TermsAndPrivacyText()
+            
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+}
+
+@Composable
+private fun LogoSection() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Logo placeholder - replace with actual logo
+        Card(
+            modifier = Modifier.size(120.dp),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primary
+            )
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "☕",
+                    style = MaterialTheme.typography.displayMedium,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        Text(
+            text = "Cafezinho",
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        
+        Spacer(modifier = Modifier.height(8.dp))
+        
+        Text(
+            text = "Conecte-se e encontre pessoas incríveis",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun SocialLoginSection(
+    onGoogleSignIn: () -> Unit,
+    onFacebookSignIn: () -> Unit,
+    isLoading: Boolean
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        // Google Sign-In Button
+        CafezinhoButton(
+            text = stringResource(R.string.auth_google_sign_in),
+            onClick = onGoogleSignIn,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !isLoading,
+            isLoading = isLoading,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black,
+                disabledContainerColor = Color.White.copy(alpha = 0.6f)
+            ),
+            leadingIcon = {
+                // Google icon placeholder
+                Text("G", style = MaterialTheme.typography.titleMedium)
+            }
+        )
+        
+        // Facebook Sign-In Button  
+        CafezinhoButton(
+            text = stringResource(R.string.auth_facebook_sign_in),
+            onClick = onFacebookSignIn,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !isLoading,
+            isLoading = isLoading,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF1877F2), // Facebook blue
+                contentColor = Color.White
+            ),
+            leadingIcon = {
+                // Facebook icon placeholder
+                Text("f", style = MaterialTheme.typography.titleMedium)
+            }
+        )
+    }
+}
+
+@Composable
+private fun DividerWithText(text: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        HorizontalDivider(
+            modifier = Modifier.weight(1f),
+            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+        )
+        
+        Text(
+            text = text,
+            modifier = Modifier.padding(horizontal = 16.dp),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+        )
+        
+        HorizontalDivider(
+            modifier = Modifier.weight(1f),
+            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PhoneInputSection(
+    phoneNumber: String,
+    onPhoneNumberChange: (String) -> Unit,
+    isValid: Boolean,
+    isLoading: Boolean,
+    onContinue: () -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        
+        Text(
+            text = stringResource(R.string.auth_enter_phone),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        
+        OutlinedTextField(
+            value = phoneNumber,
+            onValueChange = onPhoneNumberChange,
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = {
+                Text("(11) 99999-9999")
+            },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Phone,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Phone,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = { if (isValid) onContinue() }
+            ),
+            singleLine = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline
+            )
+        )
+        
+        CafezinhoButton(
+            text = stringResource(R.string.auth_continue),
+            onClick = onContinue,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = isValid && !isLoading,
+            isLoading = isLoading
+        )
+    }
+}
+
+@Composable
+private fun ErrorMessage(
+    error: String,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer
+        )
+    ) {
+        Text(
+            text = error,
+            modifier = Modifier.padding(16.dp),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onErrorContainer
+        )
+    }
+}
+
+@Composable
+private fun TermsAndPrivacyText() {
+    Text(
+        text = "Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade",
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+        textAlign = TextAlign.Center,
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview() {
+    CafezinhoTheme {
+        LoginScreen()
+    }
+}
