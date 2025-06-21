@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rcdnc.cafezinho.ui.component.ComponentSize
 import com.rcdnc.cafezinho.ui.theme.*
@@ -349,6 +350,123 @@ private fun getInterestChipSize(size: ComponentSize): InterestChipSize {
         ComponentSize.LARGE -> InterestChipSize(
             height = 40.dp,
             horizontalPadding = 20.dp
+        )
+    }
+}
+
+// Preview functions
+@Preview(name = "InterestChip - All States")
+@Composable
+private fun InterestChipPreview() {
+    CafezinhoTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text("Unselected")
+            InterestChip(
+                text = "Música",
+                state = InterestChipState.UNSELECTED,
+                onClick = { }
+            )
+            
+            Text("Selected")
+            InterestChip(
+                text = "Futebol",
+                state = InterestChipState.SELECTED,
+                onClick = { }
+            )
+            
+            Text("Readonly")
+            InterestChip(
+                text = "Viagem",
+                state = InterestChipState.READONLY
+            )
+            
+            Text("Editable")
+            InterestChip(
+                text = "Culinária",
+                state = InterestChipState.EDITABLE,
+                onRemove = { }
+            )
+        }
+    }
+}
+
+@Preview(name = "InterestChip - Sizes")
+@Composable
+private fun InterestChipSizesPreview() {
+    CafezinhoTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text("Small")
+            InterestChip(
+                text = "Small Chip",
+                size = ComponentSize.SMALL,
+                state = InterestChipState.SELECTED
+            )
+            
+            Text("Medium")
+            InterestChip(
+                text = "Medium Chip",
+                size = ComponentSize.MEDIUM,
+                state = InterestChipState.SELECTED
+            )
+            
+            Text("Large")
+            InterestChip(
+                text = "Large Chip",
+                size = ComponentSize.LARGE,
+                state = InterestChipState.SELECTED
+            )
+        }
+    }
+}
+
+@Preview(name = "InterestChipGroup")
+@Composable
+private fun InterestChipGroupPreview() {
+    CafezinhoTheme {
+        val interests = listOf("Música", "Esportes", "Viagem", "Culinária", "Arte", "Tecnologia")
+        val selectedInterests = listOf("Música", "Viagem")
+        
+        InterestChipGroup(
+            interests = interests,
+            selectedInterests = selectedInterests,
+            onInterestToggle = { },
+            showAddButton = true,
+            onAddClick = { },
+            modifier = Modifier.padding(vertical = 16.dp)
+        )
+    }
+}
+
+@Preview(name = "EditableInterestList")
+@Composable
+private fun EditableInterestListPreview() {
+    CafezinhoTheme {
+        val interests = listOf("Música", "Futebol", "Viagem")
+        
+        EditableInterestList(
+            interests = interests,
+            onRemoveInterest = { },
+            onAddClick = { },
+            modifier = Modifier.padding(vertical = 16.dp)
+        )
+    }
+}
+
+@Preview(name = "ReadOnlyInterestList")
+@Composable
+private fun ReadOnlyInterestListPreview() {
+    CafezinhoTheme {
+        val interests = listOf("Música", "Esportes", "Viagem", "Arte")
+        
+        ReadOnlyInterestList(
+            interests = interests,
+            modifier = Modifier.padding(vertical = 16.dp)
         )
     }
 }

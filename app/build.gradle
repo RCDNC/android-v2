@@ -1,9 +1,12 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
-    id 'dagger.hilt.android.plugin'
+    // Temporarily disable KAPT for demo version
+    // id 'kotlin-kapt'
+    // id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
+    // Temporarily comment Google Services to isolate issues
+    // id 'com.google.gms.google-services'
 }
 
 android {
@@ -76,9 +79,9 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0'
     
-    // Hilt
-    implementation 'com.google.dagger:hilt-android:2.48'
-    kapt 'com.google.dagger:hilt-compiler:2.48'
+    // Hilt - Disabled for demo version
+    // implementation 'com.google.dagger:hilt-android:2.48'
+    // kapt 'com.google.dagger:hilt-compiler:2.48'
     
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
@@ -90,6 +93,34 @@ dependencies {
     
     // Core Android
     implementation 'androidx.core:core-ktx:1.12.0'
+    
+    // Firebase & Authentication - Temporarily disabled for compilation
+    // implementation platform('com.google.firebase:firebase-bom:32.7.0')
+    // implementation 'com.google.firebase:firebase-auth-ktx'
+    // implementation 'com.google.firebase:firebase-analytics-ktx'
+    
+    // Google Auth (Credential Manager - Modern) - Temporarily disabled
+    // implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.0'
+    // implementation 'androidx.credentials:credentials:1.2.0'
+    // implementation 'androidx.credentials:credentials-play-services-auth:1.2.0'
+    
+    // Facebook SDK - Temporarily disabled
+    // implementation 'com.facebook.android:facebook-login:16.3.0'
+    
+    // Phone Number Validation - Temporarily disabled
+    // implementation 'io.michaelrocks:libphonenumber-android:8.13.4'
+    
+    // Country Code Picker - Temporarily disabled
+    // implementation 'com.hbb20:ccp:2.7.0'
+    
+    // DataStore (replace SharedPreferences)
+    implementation 'androidx.datastore:datastore-preferences:1.0.0'
+    
+    // Image Loading (for profile photos)
+    implementation 'io.coil-kt:coil-compose:2.5.0'
+    
+    // Date Picker (for DOB) - Temporarily disabled
+    // implementation 'io.github.vanpra.compose-material-dialogs:datetime:0.9.0'
     
     // Testing
     testImplementation 'junit:junit:4.13.2'

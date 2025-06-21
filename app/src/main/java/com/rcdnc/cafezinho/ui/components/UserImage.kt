@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 // TODO: Add Coil dependency for AsyncImage
 // import coil.compose.AsyncImage
@@ -366,5 +367,125 @@ private fun getUserImageShape(type: UserImageType): RoundedCornerShape {
         UserImageType.CARD -> RoundedCornerShape(CafezinhoCornerRadius.MEDIUM.dp)
         UserImageType.THUMBNAIL -> RoundedCornerShape(CafezinhoCornerRadius.SMALL.dp)
         UserImageType.GALLERY -> RoundedCornerShape(CafezinhoCornerRadius.SMALL.dp)
+    }
+}
+
+// Preview functions
+@Preview(name = "UserImage - Avatar Types")
+@Composable
+private fun UserImageAvatarPreview() {
+    CafezinhoTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text("Avatar - Normal")
+            UserImage(
+                imageUrl = null,
+                contentDescription = "User avatar",
+                type = UserImageType.AVATAR,
+                size = ComponentSize.MEDIUM
+            )
+            
+            Text("Avatar - Online")
+            UserImage(
+                imageUrl = null,
+                contentDescription = "User avatar",
+                type = UserImageType.AVATAR,
+                size = ComponentSize.MEDIUM,
+                isOnline = true
+            )
+            
+            Text("Avatar - Editable")
+            UserImage(
+                imageUrl = null,
+                contentDescription = "User avatar",
+                type = UserImageType.AVATAR,
+                size = ComponentSize.MEDIUM,
+                state = UserImageState.EDITABLE,
+                onEdit = { }
+            )
+        }
+    }
+}
+
+@Preview(name = "UserImage - States")
+@Composable
+private fun UserImageStatesPreview() {
+    CafezinhoTheme {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            UserImage(
+                imageUrl = null,
+                contentDescription = "Normal",
+                type = UserImageType.THUMBNAIL,
+                state = UserImageState.NORMAL
+            )
+            
+            UserImage(
+                imageUrl = null,
+                contentDescription = "Loading",
+                type = UserImageType.THUMBNAIL,
+                state = UserImageState.LOADING
+            )
+            
+            UserImage(
+                imageUrl = null,
+                contentDescription = "Error",
+                type = UserImageType.THUMBNAIL,
+                state = UserImageState.ERROR,
+                onRetry = { }
+            )
+            
+            UserImage(
+                imageUrl = null,
+                contentDescription = "Add",
+                type = UserImageType.THUMBNAIL,
+                state = UserImageState.ADDABLE,
+                onAdd = { }
+            )
+        }
+    }
+}
+
+@Preview(name = "UserImage - Types & Sizes")
+@Composable
+private fun UserImageTypesPreview() {
+    CafezinhoTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text("Card - Large")
+            UserImage(
+                imageUrl = "https://example.com/image.jpg",
+                contentDescription = "Card image",
+                type = UserImageType.CARD,
+                size = ComponentSize.LARGE
+            )
+            
+            Text("Gallery - Medium")
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                repeat(3) {
+                    UserImage(
+                        imageUrl = null,
+                        contentDescription = "Gallery image",
+                        type = UserImageType.GALLERY,
+                        size = ComponentSize.MEDIUM
+                    )
+                }
+            }
+            
+            Text("Story - With Border")
+            UserImage(
+                imageUrl = null,
+                contentDescription = "Story image",
+                type = UserImageType.STORY,
+                size = ComponentSize.MEDIUM,
+                hasStoryBorder = true
+            )
+        }
     }
 }
