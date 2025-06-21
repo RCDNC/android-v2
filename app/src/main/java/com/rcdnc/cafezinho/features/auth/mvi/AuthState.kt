@@ -21,10 +21,13 @@ sealed class AuthState {
     // Phone Authentication States
     object PhoneVerificationLoading : AuthState()
     data class PhoneVerificationSent(val phoneNumber: String, val verificationId: String) : AuthState()
+    data class PhoneVerificationSuccess(val user: User) : AuthState()
+    data class PhoneVerificationError(val error: AuthError, val phoneNumber: String) : AuthState()
     object OtpVerificationLoading : AuthState()
     data class OtpVerificationSuccess(val user: User) : AuthState()
     data class OtpVerificationError(val error: AuthError, val phoneNumber: String) : AuthState()
     object ResendingOtp : AuthState()
+    data class ResendPhoneVerification(val phoneNumber: String) : AuthState()
     data class OtpResent(val phoneNumber: String) : AuthState()
     
     // Registration States
@@ -37,6 +40,7 @@ sealed class AuthState {
         val currentStep: ProfileStep,
         val registrationData: RegistrationData,
         val isLoading: Boolean = false,
+        val isStepValid: Boolean = false,
         val error: AuthError? = null
     ) : AuthState()
     

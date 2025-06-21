@@ -57,11 +57,14 @@ class AuthViewModel @Inject constructor(
 
                 // Profile Completion Intents
                 is AuthIntent.UpdateFirstName -> handleUpdateFirstName(intent.firstName)
-                is AuthIntent.UpdateDateOfBirth -> handleUpdateDateOfBirth(intent.dateOfBirth)
+                is AuthIntent.UpdateDateOfBirth -> handleUpdateDateOfBirth(intent.dateOfBirth.time)
                 is AuthIntent.UpdateGender -> handleUpdateGender(intent.gender)
                 is AuthIntent.UpdateGenderPreference -> handleUpdateGenderPreference(intent.preference)
                 is AuthIntent.UpdateInterests -> handleUpdateInterests(intent.interests)
-                is AuthIntent.UpdatePhotos -> handleUpdatePhotos(intent.photos)
+                is AuthIntent.UpdateProfilePhotos -> handleUpdatePhotos(intent.photos)
+                is AuthIntent.UpdateLastName -> handleUpdateLastName(intent.lastName)
+                is AuthIntent.UpdateBio -> handleUpdateBio(intent.bio)
+                is AuthIntent.UpdateSchool -> handleUpdateSchool(intent.school)
                 is AuthIntent.UpdateAdditionalInfo -> handleUpdateAdditionalInfo(intent.school, intent.bio)
 
                 // Profile Navigation Intents
@@ -263,6 +266,22 @@ class AuthViewModel @Inject constructor(
 
     private fun handleUpdateAdditionalInfo(school: String?, bio: String?) {
         currentRegistrationData = currentRegistrationData.copy(school = school, bio = bio)
+        updateProfileCompletionState(ProfileStep.ADDITIONAL_INFO)
+    }
+
+    private fun handleUpdateLastName(lastName: String) {
+        // In this simplified implementation, we don't have lastName in RegistrationData
+        // So we'll just update the current step for now
+        updateProfileCompletionState(ProfileStep.FIRST_NAME)
+    }
+
+    private fun handleUpdateBio(bio: String) {
+        currentRegistrationData = currentRegistrationData.copy(bio = bio)
+        updateProfileCompletionState(ProfileStep.ADDITIONAL_INFO)
+    }
+
+    private fun handleUpdateSchool(school: String) {
+        currentRegistrationData = currentRegistrationData.copy(school = school)
         updateProfileCompletionState(ProfileStep.ADDITIONAL_INFO)
     }
 

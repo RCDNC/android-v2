@@ -1,7 +1,7 @@
 package com.rcdnc.cafezinho.features.auth.data.repository
 
 import com.rcdnc.cafezinho.features.auth.domain.model.User
-import com.rcdnc.cafezinho.features.auth.domain.model.RegistrationData
+import com.rcdnc.cafezinho.features.auth.mvi.RegistrationData
 import com.rcdnc.cafezinho.features.auth.domain.repository.AuthRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -107,13 +107,12 @@ class SimplifiedAuthRepositoryImpl @Inject constructor() : AuthRepository {
             val mockUser = User(
                 id = "registered_user_${System.currentTimeMillis()}",
                 firstName = registrationData.firstName,
-                lastName = registrationData.lastName,
-                dateOfBirth = registrationData.dateOfBirth,
+                dateOfBirth = registrationData.dateOfBirth?.let { java.util.Date(it) },
                 gender = registrationData.gender,
                 genderPreference = registrationData.genderPreference,
                 bio = registrationData.bio,
                 school = registrationData.school,
-                profilePhotos = registrationData.profilePhotos,
+                profilePhotos = registrationData.photos,
                 isProfileComplete = true,
                 isVerified = true
             )
@@ -206,5 +205,50 @@ class SimplifiedAuthRepositoryImpl @Inject constructor() : AuthRepository {
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    override suspend fun checkUserExists(phoneNumber: String): Result<Boolean> {
+        return try {
+            Result.success(false) // Always return false for testing
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun checkEmailAvailable(email: String): Result<Boolean> {
+        return try {
+            Result.success(true) // Always return true for testing
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // Legacy methods (for backward compatibility)
+    override suspend fun authenticateWithSocial(provider: String, params: Map<String, Any>): Result<User> {
+        return when (provider.lowercase()) {
+            "google" -> signInWithGoogle()
+            "facebook" -> signInWithFacebook()
+            else -> Result.failure(IllegalArgumentException("Unsupported provider: $provider"))
+        }
+    }
+
+    override suspend fun login(email: String, password: String): Result<User> {
+        return signInWithEmail(email, password)
+    }
+
+    override suspend fun loginWithPhone(phone: String, otp: String): Result<User> {
+        return signInWithPhone(phone, otp)
+    }
+
+    override suspend fun signup(phone: String): Result<String> {
+        return registerWithPhone(phone)
+    }
+
+    override suspend fun verifyOtp(phone: String, otp: String): Result<User> {
+        return verifyPhoneOtp("mock_verification_id", otp)
+    }
+
+    override suspend fun logout(): Result<Unit> {
+        return signOut()
     }
 }

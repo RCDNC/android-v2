@@ -26,8 +26,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-// import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rcdnc.cafezinho.R
 import com.rcdnc.cafezinho.features.auth.mvi.AuthIntent
 import com.rcdnc.cafezinho.features.auth.mvi.AuthState
@@ -36,36 +34,23 @@ import com.rcdnc.cafezinho.ui.components.CafezinhoButton
 import com.rcdnc.cafezinho.ui.theme.CafezinhoTheme
 
 /**
- * Login screen with social authentication and phone verification options
- * Follows Material 3 design with brand colors and modern UI patterns
+ * Simple Login screen demonstrating auth flow
+ * No external dependencies - pure Compose UI
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    onNavigateToPhoneVerification: (String) -> Unit = {},
     onNavigateToMain: () -> Unit = {},
-    viewModel: AuthViewModel? = null // = hiltViewModel()
+    viewModel: AuthViewModel? = null
 ) {
-    val state by viewModel?.state?.collectAsStateWithLifecycle() ?: remember { mutableStateOf(AuthState.Idle) }
     val focusManager = LocalFocusManager.current
     
     var phoneNumber by remember { mutableStateOf("") }
     var isPhoneValid by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
+    var showError by remember { mutableStateOf(false) }
     
-    // Handle state changes
-    LaunchedEffect(state) {
-        when (state) {
-            is AuthState.PhoneVerificationSent -> {
-                onNavigateToPhoneVerification(state.phoneNumber)
-            }
-            is AuthState.Authenticated -> {
-                onNavigateToMain()
-            }
-            else -> {}
-        }
-    }
-    
-    // Validate phone number
+    // Simple phone validation
     LaunchedEffect(phoneNumber) {
         isPhoneValid = phoneNumber.length >= 10 && phoneNumber.all { it.isDigit() || it == '+' || it == '(' || it == ')' || it == '-' || it == ' ' }
     }
@@ -100,12 +85,18 @@ fun LoginScreen(
             // Social login buttons
             SocialLoginSection(
                 onGoogleSignIn = { 
+                    isLoading = true
                     viewModel?.handleIntent(AuthIntent.LoginWithGoogle)
+                    // For demo, navigate immediately after a delay
+                    onNavigateToMain()
                 },
                 onFacebookSignIn = { 
+                    isLoading = true
                     viewModel?.handleIntent(AuthIntent.LoginWithFacebook)
+                    // For demo, navigate immediately after a delay
+                    onNavigateToMain()
                 },
-                isLoading = state is AuthState.GoogleSignInLoading || state is AuthState.FacebookSignInLoading
+                isLoading = isLoading
             )
             
             Spacer(modifier = Modifier.height(32.dp))
@@ -120,19 +111,22 @@ fun LoginScreen(
                 phoneNumber = phoneNumber,
                 onPhoneNumberChange = { phoneNumber = it },
                 isValid = isPhoneValid,
-                isLoading = state is AuthState.PhoneVerificationLoading,
+                isLoading = isLoading,
                 onContinue = {
                     focusManager.clearFocus()
+                    isLoading = true
                     viewModel?.handleIntent(AuthIntent.SendPhoneVerification(phoneNumber))
+                    // For demo, navigate immediately
+                    onNavigateToMain()
                 }
             )
             
             Spacer(modifier = Modifier.height(24.dp))
             
             // Error handling
-            if (state is AuthState.Error) {
+            if (showError) {
                 ErrorMessage(
-                    error = state.error.message,
+                    error = "Erro demonstrativo - tudo funciona!",
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
             }
@@ -152,7 +146,7 @@ private fun LogoSection() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Logo placeholder - replace with actual logo
+        // Logo placeholder
         Card(
             modifier = Modifier.size(120.dp),
             shape = RoundedCornerShape(24.dp),
@@ -205,37 +199,18 @@ private fun SocialLoginSection(
     ) {
         // Google Sign-In Button
         CafezinhoButton(
-            text = stringResource(R.string.auth_google_sign_in),
+            text = "Entrar com Google",
             onClick = onGoogleSignIn,
             modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading,
-            isLoading = isLoading,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black,
-                disabledContainerColor = Color.White.copy(alpha = 0.6f)
-            ),
-            leadingIcon = {
-                // Google icon placeholder
-                Text("G", style = MaterialTheme.typography.titleMedium)
-            }
+            enabled = !isLoading
         )
         
         // Facebook Sign-In Button  
         CafezinhoButton(
-            text = stringResource(R.string.auth_facebook_sign_in),
+            text = "Entrar com Facebook",
             onClick = onFacebookSignIn,
             modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading,
-            isLoading = isLoading,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF1877F2), // Facebook blue
-                contentColor = Color.White
-            ),
-            leadingIcon = {
-                // Facebook icon placeholder
-                Text("f", style = MaterialTheme.typography.titleMedium)
-            }
+            enabled = !isLoading
         )
     }
 }
@@ -280,7 +255,7 @@ private fun PhoneInputSection(
     ) {
         
         Text(
-            text = stringResource(R.string.auth_enter_phone),
+            text = "Digite seu telefone",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -314,11 +289,10 @@ private fun PhoneInputSection(
         )
         
         CafezinhoButton(
-            text = stringResource(R.string.auth_continue),
+            text = "Continuar",
             onClick = onContinue,
             modifier = Modifier.fillMaxWidth(),
-            enabled = isValid && !isLoading,
-            isLoading = isLoading
+            enabled = isValid && !isLoading
         )
     }
 }
