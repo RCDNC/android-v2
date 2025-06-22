@@ -17,7 +17,7 @@ import javax.inject.Singleton
 class ApiConfig @Inject constructor() {
     
     companion object {
-        const val BASE_URL = "https://api.cafezinho.com/" // TODO: Configurar URL real
+        const val BASE_URL = "http://localhost:8000/api/" // TODO: Trocar por URL de produção
         const val TIMEOUT_SECONDS = 30L
     }
     

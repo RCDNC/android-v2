@@ -1,85 +1,53 @@
 package com.rcdnc.cafezinho.features.auth.presentation.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.rcdnc.cafezinho.R
-import com.rcdnc.cafezinho.features.auth.mvi.AuthIntent
-import com.rcdnc.cafezinho.features.auth.mvi.AuthState
-import com.rcdnc.cafezinho.features.auth.presentation.viewmodel.SimpleAuthViewModel
 import com.rcdnc.cafezinho.ui.components.CafezinhoButton
-import com.rcdnc.cafezinho.ui.theme.CafezinhoTheme
+import com.rcdnc.cafezinho.ui.theme.*
 
 /**
- * Simple Login screen demonstrating auth flow
- * No external dependencies - pure Compose UI
+ * Tela de Login simplificada para resolver blocker crítico
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    onNavigateToMain: () -> Unit = {},
-    viewModel: SimpleAuthViewModel? = null
+    onLoginClick: (String, String, Boolean) -> Unit = { _, _, _ -> },
+    onRegisterClick: () -> Unit = {},
+    onForgotPasswordClick: () -> Unit = {},
+    onGoogleLoginClick: () -> Unit = {},
+    onFacebookLoginClick: () -> Unit = {},
+    isLoading: Boolean = false,
+    errorMessage: String? = null,
+    modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-    val actualViewModel = viewModel ?: remember { SimpleAuthViewModel(context) }
-    val state by actualViewModel.state.collectAsStateWithLifecycle()
-    val focusManager = LocalFocusManager.current
-    
-    var phoneNumber by remember { mutableStateOf("") }
-    var isPhoneValid by remember { mutableStateOf(false) }
-    
-    // Handle state changes
-    LaunchedEffect(state) {
-        when (state) {
-            is AuthState.Authenticated -> {
-                onNavigateToMain()
-            }
-            is AuthState.PhoneVerificationSent -> {
-                // For now, just navigate to main
-                onNavigateToMain()
-            }
-            else -> {}
-        }
-    }
-    
-    // Simple phone validation
-    LaunchedEffect(phoneNumber) {
-        isPhoneValid = phoneNumber.length >= 10 && phoneNumber.all { it.isDigit() || it == '+' || it == '(' || it == ')' || it == '-' || it == ' ' }
-    }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var rememberMe by remember { mutableStateOf(true) }
+    var passwordVisible by remember { mutableStateOf(false) }
     
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                        MaterialTheme.colorScheme.background
+                        CafezinhoPrimary.copy(alpha = 0.1f),
+                        CafezinhoBackground
                     )
                 )
             )
@@ -87,275 +55,153 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
                 .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
+            // Logo
+            Icon(
+                imageVector = Icons.Default.Coffee,
+                contentDescription = "Cafezinho Logo",
+                modifier = Modifier.size(80.dp),
+                tint = CafezinhoPrimary
+            )
             
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             
-            // Logo and welcome text
-            LogoSection()
+            Text(
+                text = "☕ Cafezinho",
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
+                color = CafezinhoPrimary
+            )
+            
+            Text(
+                text = "Encontre sua conexão perfeita",
+                style = MaterialTheme.typography.bodyLarge,
+                color = CafezinhoOnSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
             
             Spacer(modifier = Modifier.height(48.dp))
             
-            // Social login buttons
-            SocialLoginSection(
-                onGoogleSignIn = { 
-                    actualViewModel.handleIntent(AuthIntent.LoginWithGoogle)
-                },
-                onFacebookSignIn = { 
-                    actualViewModel.handleIntent(AuthIntent.LoginWithFacebook)
-                },
-                onBypass = {
-                    // Bypass direto para o main app
-                    onNavigateToMain()
-                },
-                isLoading = state is AuthState.GoogleSignInLoading || state is AuthState.FacebookSignInLoading
-            )
-            
-            Spacer(modifier = Modifier.height(32.dp))
-            
-            // Divider with "ou" text
-            DividerWithText(text = "ou")
-            
-            Spacer(modifier = Modifier.height(32.dp))
-            
-            // Phone number input
-            PhoneInputSection(
-                phoneNumber = phoneNumber,
-                onPhoneNumberChange = { phoneNumber = it },
-                isValid = isPhoneValid,
-                isLoading = state is AuthState.PhoneVerificationLoading,
-                onContinue = {
-                    focusManager.clearFocus()
-                    actualViewModel.handleIntent(AuthIntent.SendPhoneVerification(phoneNumber))
-                }
-            )
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            // Error handling
-            when (val currentState = state) {
-                is AuthState.Error -> {
-                    ErrorMessage(
-                        error = currentState.error.message,
-                        modifier = Modifier.padding(vertical = 8.dp)
+            // Login Form
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = CafezinhoSurface),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(
+                        text = "Entrar",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = CafezinhoOnSurface
                     )
+                    
+                    // Email Field
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        label = { Text("Email") },
+                        leadingIcon = {
+                            Icon(Icons.Default.Email, contentDescription = null)
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !isLoading
+                    )
+                    
+                    // Password Field
+                    OutlinedTextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        label = { Text("Senha") },
+                        leadingIcon = {
+                            Icon(Icons.Default.Lock, contentDescription = null)
+                        },
+                        trailingIcon = {
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(
+                                    imageVector = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                    contentDescription = if (passwordVisible) "Ocultar senha" else "Mostrar senha"
+                                )
+                            }
+                        },
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !isLoading
+                    )
+                    
+                    // Error Message
+                    errorMessage?.let { error ->
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = CafezinhoDislike.copy(alpha = 0.1f)
+                            ),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = error,
+                                color = CafezinhoDislike,
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.padding(12.dp)
+                            )
+                        }
+                    }
+                    
+                    // Login Button
+                    CafezinhoButton(
+                        text = if (isLoading) "Entrando..." else "Entrar",
+                        onClick = {
+                            onLoginClick(email, password, rememberMe)
+                        },
+                        enabled = !isLoading && email.isNotBlank() && password.isNotBlank(),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    
+                    // Demo Info
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = CafezinhoPrimary.copy(alpha = 0.1f)
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text(
+                                text = "🚀 Demo - Use qualquer email/senha",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Medium,
+                                color = CafezinhoPrimary
+                            )
+                            Text(
+                                text = "Exemplo: teste@exemplo.com / 123456",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = CafezinhoOnSurfaceVariant
+                            )
+                        }
+                    }
                 }
-                else -> {}
             }
-            
-            Spacer(modifier = Modifier.height(32.dp))
-            
-            // Terms and privacy
-            TermsAndPrivacyText()
-            
-            Spacer(modifier = Modifier.height(24.dp))
         }
-    }
-}
-
-@Composable
-private fun LogoSection() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Logo placeholder
-        Card(
-            modifier = Modifier.size(120.dp),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            )
-        ) {
+        
+        // Loading Overlay
+        if (isLoading) {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(CafezinhoBackground.copy(alpha = 0.7f)),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "☕",
-                    style = MaterialTheme.typography.displayMedium,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
+                CircularProgressIndicator(color = CafezinhoPrimary)
             }
         }
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        Text(
-            text = "Cafezinho",
-            style = MaterialTheme.typography.headlineMedium.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        
-        Spacer(modifier = Modifier.height(8.dp))
-        
-        Text(
-            text = "Conecte-se e encontre pessoas incríveis",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-private fun SocialLoginSection(
-    onGoogleSignIn: () -> Unit,
-    onFacebookSignIn: () -> Unit,
-    onBypass: () -> Unit,
-    isLoading: Boolean
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        // Bypass Button (Debug)
-        CafezinhoButton(
-            text = "🚀 ENTRAR DIRETO (BYPASS)",
-            onClick = onBypass,
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading
-        )
-        
-        // Google Sign-In Button
-        CafezinhoButton(
-            text = "Entrar com Google",
-            onClick = onGoogleSignIn,
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading
-        )
-        
-        // Facebook Sign-In Button  
-        CafezinhoButton(
-            text = "Entrar com Facebook",
-            onClick = onFacebookSignIn,
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading
-        )
-    }
-}
-
-@Composable
-private fun DividerWithText(text: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.weight(1f),
-            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-        )
-        
-        Text(
-            text = text,
-            modifier = Modifier.padding(horizontal = 16.dp),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-        )
-        
-        HorizontalDivider(
-            modifier = Modifier.weight(1f),
-            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun PhoneInputSection(
-    phoneNumber: String,
-    onPhoneNumberChange: (String) -> Unit,
-    isValid: Boolean,
-    isLoading: Boolean,
-    onContinue: () -> Unit
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        
-        Text(
-            text = "Digite seu telefone",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        
-        OutlinedTextField(
-            value = phoneNumber,
-            onValueChange = onPhoneNumberChange,
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = {
-                Text("(11) 99999-9999")
-            },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Phone,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Phone,
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = { if (isValid) onContinue() }
-            ),
-            singleLine = true,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline
-            )
-        )
-        
-        CafezinhoButton(
-            text = "Continuar",
-            onClick = onContinue,
-            modifier = Modifier.fillMaxWidth(),
-            enabled = isValid && !isLoading
-        )
-    }
-}
-
-@Composable
-private fun ErrorMessage(
-    error: String,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer
-        )
-    ) {
-        Text(
-            text = error,
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onErrorContainer
-        )
-    }
-}
-
-@Composable
-private fun TermsAndPrivacyText() {
-    Text(
-        text = "Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade",
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-        textAlign = TextAlign.Center,
-        modifier = Modifier.padding(horizontal = 16.dp)
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    CafezinhoTheme {
-        LoginScreen()
     }
 }

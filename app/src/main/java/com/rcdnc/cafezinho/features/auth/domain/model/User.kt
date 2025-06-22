@@ -1,131 +1,119 @@
 package com.rcdnc.cafezinho.features.auth.domain.model
 
-import java.util.*
-
 /**
- * User domain model representing authenticated user data
- * Used across authentication and profile features
+ * Modelo de domínio para usuário autenticado
+ * Baseado na estrutura da API Laravel do Cafezinho
  */
 data class User(
     val id: String,
-    val firstName: String? = null,
+    val email: String,
+    val firstName: String,
     val lastName: String? = null,
-    val email: String? = null,
-    val phone: String? = null,
-    val isVerified: Boolean = false,
-    val isProfileComplete: Boolean = false,
-    val token: String? = null,
-    val refreshToken: String? = null,
-    
-    // Profile fields for completion wizard
-    val dateOfBirth: Date? = null,
+    val phoneNumber: String? = null,
+    val dateOfBirth: String? = null,
     val gender: String? = null,
-    val genderPreference: String? = null,
-    val bio: String? = null,
-    val school: String? = null,
-    val profilePhotoUrl: String? = null,
-    val profilePhotos: List<String> = emptyList(),
-    
-    // Social auth data
-    val socialId: String? = null,
-    val socialType: SocialAuthType? = null,
-    
-    // App settings
-    val notificationsEnabled: Boolean = true,
-    val locationEnabled: Boolean = false,
-    val themeMode: String = "system",
-    
-    // Timestamps
-    val createdAt: Date? = null,
-    val lastLoginAt: Date? = null
+    val isVerified: Boolean = false,
+    val isPremium: Boolean = false,
+    val profileCompletion: Int = 0,
+    val createdAt: Long = System.currentTimeMillis(),
+    val lastLoginAt: Long? = null
 )
 
 /**
- * Supported social authentication providers
+ * Credenciais de login
  */
-enum class SocialAuthType {
+data class LoginCredentials(
+    val email: String,
+    val password: String,
+    val rememberMe: Boolean = true
+)
+
+/**
+ * Dados para registro de usuário
+ */
+data class RegisterData(
+    val email: String,
+    val password: String,
+    val confirmPassword: String,
+    val firstName: String,
+    val lastName: String,
+    val phoneNumber: String,
+    val dateOfBirth: String,
+    val gender: String,
+    val acceptTerms: Boolean
+)
+
+/**
+ * Resultado da autenticação
+ */
+data class AuthResult(
+    val user: User,
+    val accessToken: String,
+    val refreshToken: String? = null,
+    val tokenType: String = "Bearer",
+    val expiresIn: Long = 0
+)
+
+/**
+ * Estados de autenticação
+ */
+enum class AuthStatus {
+    UNAUTHENTICATED,
+    AUTHENTICATING,
+    AUTHENTICATED,
+    TOKEN_EXPIRED,
+    AUTH_ERROR
+}
+
+/**
+ * Erro de autenticação
+ */
+sealed class AuthError : Exception() {
+    object NetworkError : AuthError()
+    object InvalidCredentials : AuthError()
+    object UserNotFound : AuthError()
+    object EmailAlreadyExists : AuthError()
+    object WeakPassword : AuthError()
+    object TokenExpired : AuthError()
+    object AccountNotVerified : AuthError()
+    object TooManyAttempts : AuthError()
+    data class ValidationError(val field: String, val message: String) : AuthError()
+    data class UnknownError(override val message: String) : AuthError()
+}
+
+/**
+ * Dados para redefinição de senha
+ */
+data class PasswordResetData(
+    val email: String
+)
+
+/**
+ * Dados para confirmação de reset
+ */
+data class PasswordResetConfirmData(
+    val email: String,
+    val token: String,
+    val newPassword: String,
+    val confirmPassword: String
+)
+
+/**
+ * Provider de login social
+ */
+enum class SocialProvider {
     GOOGLE,
-    FACEBOOK
+    FACEBOOK,
+    APPLE
 }
 
 /**
- * Profile completion steps for registration wizard
+ * Dados de login social
  */
-enum class ProfileStep {
-    FIRST_NAME,
-    LAST_NAME,
-    DATE_OF_BIRTH,
-    GENDER,
-    GENDER_PREFERENCE,
-    BIO,
-    SCHOOL,
-    PHOTOS,
-    COMPLETION;
-    
-    fun next(): ProfileStep? {
-        return when (this) {
-            FIRST_NAME -> LAST_NAME
-            LAST_NAME -> DATE_OF_BIRTH
-            DATE_OF_BIRTH -> GENDER
-            GENDER -> GENDER_PREFERENCE
-            GENDER_PREFERENCE -> BIO
-            BIO -> SCHOOL
-            SCHOOL -> PHOTOS
-            PHOTOS -> COMPLETION
-            COMPLETION -> null
-        }
-    }
-    
-    fun previous(): ProfileStep? {
-        return when (this) {
-            FIRST_NAME -> null
-            LAST_NAME -> FIRST_NAME
-            DATE_OF_BIRTH -> LAST_NAME
-            GENDER -> DATE_OF_BIRTH
-            GENDER_PREFERENCE -> GENDER
-            BIO -> GENDER_PREFERENCE
-            SCHOOL -> BIO
-            PHOTOS -> SCHOOL
-            COMPLETION -> PHOTOS
-        }
-    }
-}
-
-/**
- * Registration data transfer object for profile completion
- */
-data class RegistrationData(
-    val firstName: String = "",
-    val lastName: String = "",
-    val dateOfBirth: Date? = null,
-    val gender: String? = null,
-    val genderPreference: String? = null,
-    val bio: String = "",
-    val school: String = "",
-    val profilePhotos: List<String> = emptyList()
-) {
-    fun isStepValid(step: ProfileStep): Boolean {
-        return when (step) {
-            ProfileStep.FIRST_NAME -> firstName.isNotBlank()
-            ProfileStep.LAST_NAME -> lastName.isNotBlank()
-            ProfileStep.DATE_OF_BIRTH -> dateOfBirth != null
-            ProfileStep.GENDER -> !gender.isNullOrBlank()
-            ProfileStep.GENDER_PREFERENCE -> !genderPreference.isNullOrBlank()
-            ProfileStep.BIO -> bio.isNotBlank()
-            ProfileStep.SCHOOL -> school.isNotBlank()
-            ProfileStep.PHOTOS -> profilePhotos.isNotEmpty()
-            ProfileStep.COMPLETION -> isComplete()
-        }
-    }
-    
-    fun isComplete(): Boolean {
-        return firstName.isNotBlank() &&
-                lastName.isNotBlank() &&
-                dateOfBirth != null &&
-                !gender.isNullOrBlank() &&
-                !genderPreference.isNullOrBlank() &&
-                bio.isNotBlank() &&
-                school.isNotBlank() &&
-                profilePhotos.isNotEmpty()
-    }
-}
+data class SocialLoginData(
+    val provider: SocialProvider,
+    val token: String,
+    val email: String? = null,
+    val firstName: String? = null,
+    val lastName: String? = null
+)

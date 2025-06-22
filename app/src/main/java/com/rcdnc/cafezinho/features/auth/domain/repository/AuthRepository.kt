@@ -1,54 +1,110 @@
 package com.rcdnc.cafezinho.features.auth.domain.repository
 
-import com.rcdnc.cafezinho.features.auth.domain.model.User
-import com.rcdnc.cafezinho.features.auth.mvi.RegistrationData
+import com.rcdnc.cafezinho.features.auth.domain.model.*
+import kotlinx.coroutines.flow.Flow
 
 /**
- * Authentication repository interface
- * Defines all authentication operations following Clean Architecture
+ * Repository interface para autenticação
+ * Abstração da camada de dados para auth
  */
 interface AuthRepository {
     
-    // Social Authentication
-    suspend fun signInWithGoogle(): Result<User>
-    suspend fun signInWithFacebook(): Result<User>
-    suspend fun signInWithSocialCredential(provider: String, credential: Any): Result<User>
+    /**
+     * Observa o estado de autenticação atual
+     */
+    fun observeAuthStatus(): Flow<AuthStatus>
     
-    // Phone Authentication
-    suspend fun sendPhoneVerification(phoneNumber: String): Result<String> // Returns verification ID
-    suspend fun verifyPhoneOtp(verificationId: String, otp: String): Result<User>
-    suspend fun resendPhoneVerification(phoneNumber: String): Result<String>
+    /**
+     * Observa o usuário atual autenticado
+     */
+    fun observeCurrentUser(): Flow<User?>
     
-    // Traditional Authentication (if needed)
-    suspend fun signInWithEmail(email: String, password: String): Result<User>
-    suspend fun signInWithPhone(phone: String, otp: String): Result<User>
+    /**
+     * Obtém o usuário atual (sincrono)
+     */
+    fun getCurrentUser(): User?
     
-    // Registration
-    suspend fun registerWithPhone(phoneNumber: String): Result<String> // Returns verification ID
-    suspend fun completeRegistration(registrationData: RegistrationData): Result<User>
-    suspend fun updateUserProfile(userId: String, profileData: Map<String, Any>): Result<User>
+    /**
+     * Obtém o token de acesso atual
+     */
+    fun getCurrentToken(): String?
     
-    // Profile Management
-    suspend fun uploadProfilePhoto(userId: String, photoUri: String): Result<String> // Returns photo URL
-    suspend fun updateProfileField(userId: String, field: String, value: Any): Result<Unit>
-    suspend fun getProfileCompletionStatus(userId: String): Result<Boolean>
+    /**
+     * Verifica se o usuário está autenticado
+     */
+    fun isAuthenticated(): Boolean
     
-    // Session Management
-    suspend fun getCurrentUser(): User?
-    suspend fun refreshAuthToken(): Result<String>
-    suspend fun signOut(): Result<Unit>
-    suspend fun deleteAccount(userId: String): Result<Unit>
+    /**
+     * Login com email e senha
+     */
+    suspend fun login(credentials: LoginCredentials): Result<AuthResult>
     
-    // Validation
-    suspend fun validatePhoneNumber(phoneNumber: String): Result<String> // Returns formatted phone
-    suspend fun checkUserExists(phoneNumber: String): Result<Boolean>
-    suspend fun checkEmailAvailable(email: String): Result<Boolean>
+    /**
+     * Registro de novo usuário
+     */
+    suspend fun register(registerData: RegisterData): Result<AuthResult>
     
-    // Legacy support (for migration)
-    suspend fun authenticateWithSocial(provider: String, params: Map<String, Any>): Result<User>
-    suspend fun login(email: String, password: String): Result<User>
-    suspend fun loginWithPhone(phone: String, otp: String): Result<User>
-    suspend fun signup(phone: String): Result<String>
-    suspend fun verifyOtp(phone: String, otp: String): Result<User>
+    /**
+     * Login social (Google, Facebook, Apple)
+     */
+    suspend fun socialLogin(socialData: SocialLoginData): Result<AuthResult>
+    
+    /**
+     * Logout do usuário atual
+     */
     suspend fun logout(): Result<Unit>
+    
+    /**
+     * Refresh do token de acesso
+     */
+    suspend fun refreshToken(): Result<AuthResult>
+    
+    /**
+     * Solicitação de redefinição de senha
+     */
+    suspend fun requestPasswordReset(email: String): Result<Unit>
+    
+    /**
+     * Confirmação de redefinição de senha
+     */
+    suspend fun confirmPasswordReset(resetData: PasswordResetConfirmData): Result<Unit>
+    
+    /**
+     * Verificação de email
+     */
+    suspend fun verifyEmail(token: String): Result<Unit>
+    
+    /**
+     * Reenvio de email de verificação
+     */
+    suspend fun resendVerificationEmail(): Result<Unit>
+    
+    /**
+     * Atualização de senha
+     */
+    suspend fun updatePassword(currentPassword: String, newPassword: String): Result<Unit>
+    
+    /**
+     * Atualização de dados básicos do usuário
+     */
+    suspend fun updateUserData(
+        firstName: String,
+        lastName: String?,
+        phoneNumber: String?
+    ): Result<User>
+    
+    /**
+     * Exclusão de conta
+     */
+    suspend fun deleteAccount(password: String): Result<Unit>
+    
+    /**
+     * Validação de token (verifica se ainda é válido)
+     */
+    suspend fun validateToken(): Result<Boolean>
+    
+    /**
+     * Clear de todos os dados de autenticação (logout local)
+     */
+    suspend fun clearAuthData(): Result<Unit>
 }
