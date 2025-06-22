@@ -214,9 +214,9 @@ private fun MatchesTabContent(paddingValues: PaddingValues) {
             Spacer(modifier = Modifier.height(32.dp))
             
             Text(
-                text = "🚧 Em desenvolvimento - Issue #2923",
+                text = "✅ Matches implementado! Navegação em breve...",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center
             )
         }
