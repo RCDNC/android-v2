@@ -163,7 +163,7 @@ private fun SwipeTabContent(paddingValues: PaddingValues) {
             Spacer(modifier = Modifier.height(32.dp))
             
             Text(
-                text = "🚧 Em desenvolvimento - Issue #2918",
+                text = "✅ Descobrir implementado! Navegação em breve...",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center

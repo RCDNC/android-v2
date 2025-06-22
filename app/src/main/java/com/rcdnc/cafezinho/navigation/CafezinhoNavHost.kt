@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.rcdnc.cafezinho.features.swipe.presentation.ui.SwipeScreen
 
 /**
  * Main Navigation Host for Cafezinho app
@@ -38,7 +39,14 @@ fun CafezinhoNavHost(
         
         // Swipe feature navigation
         composable(NavigationDestinations.Swipe.CARDS) {
-            PlaceholderScreen(title = "Swipe Cards")
+            SwipeScreen(
+                onNavigateToChat = { userId ->
+                    navController.navigate("${NavigationDestinations.Chat.INBOX}/$userId")
+                },
+                onNavigateToProfile = {
+                    navController.navigate(NavigationDestinations.Profile.VIEW)
+                }
+            )
         }
         
         // Chat feature navigation
