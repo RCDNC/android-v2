@@ -107,6 +107,10 @@ fun LoginScreen(
                 onFacebookSignIn = { 
                     actualViewModel.handleIntent(AuthIntent.LoginWithFacebook)
                 },
+                onBypass = {
+                    // Bypass direto para o main app
+                    onNavigateToMain()
+                },
                 isLoading = state is AuthState.GoogleSignInLoading || state is AuthState.FacebookSignInLoading
             )
             
@@ -202,12 +206,21 @@ private fun LogoSection() {
 private fun SocialLoginSection(
     onGoogleSignIn: () -> Unit,
     onFacebookSignIn: () -> Unit,
+    onBypass: () -> Unit,
     isLoading: Boolean
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        // Bypass Button (Debug)
+        CafezinhoButton(
+            text = "🚀 ENTRAR DIRETO (BYPASS)",
+            onClick = onBypass,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !isLoading
+        )
+        
         // Google Sign-In Button
         CafezinhoButton(
             text = "Entrar com Google",
