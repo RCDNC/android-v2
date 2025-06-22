@@ -15,8 +15,12 @@ object Environment {
         PRODUCTION
     }
     
-    // TODO: Configurar via BuildConfig ou variáveis de ambiente
-    val CURRENT: Type = Type.DEVELOPMENT
+    // Configuração baseada em BuildConfig
+    val CURRENT: Type = when {
+        // TODO: Configurar via BuildConfig.BUILD_TYPE quando compilar
+        true -> Type.DEVELOPMENT  // Forçado para desenvolvimento
+        else -> Type.PRODUCTION
+    }
     
     /**
      * URLs base por ambiente

@@ -120,10 +120,10 @@ dependencies {
     // Core Android  
     implementation 'androidx.core:core-ktx:1.12.0'
     
-    // Firebase & Authentication - Temporarily disabled for compilation
-    // implementation platform('com.google.firebase:firebase-bom:32.7.0')
-    // implementation 'com.google.firebase:firebase-auth-ktx'
-    // implementation 'com.google.firebase:firebase-analytics-ktx'
+    // Firebase & Push Notifications
+    implementation platform('com.google.firebase:firebase-bom:32.7.0')
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
     
     // Google Auth (Credential Manager - Compatible with API 34)
     implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.0'
