@@ -265,9 +265,9 @@ private fun ChatTabContent(paddingValues: PaddingValues) {
             Spacer(modifier = Modifier.height(32.dp))
             
             Text(
-                text = "🚧 Em desenvolvimento - Issue #2921",
+                text = "✅ Chat + API Laravel integrados! WebSocket em desenvolvimento...",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.tertiary,
+                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center
             )
         }

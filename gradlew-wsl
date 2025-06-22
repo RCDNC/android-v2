@@ -1,0 +1,8 @@
+#!/bin/bash
+# WSL Gradle Wrapper - Forces correct JDK usage
+
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
+
+# Force Gradle to use our JDK
+exec ./gradlew -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64 "$@"
