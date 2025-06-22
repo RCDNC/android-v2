@@ -25,9 +25,33 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+            buildConfigField "String", "ENVIRONMENT", '"DEVELOPMENT"'
+            buildConfigField "String", "API_BASE_URL", '"http://10.0.2.2:8000/api/"'
+            buildConfigField "boolean", "ENABLE_LOGGING", "true"
+        }
+        
+        staging {
+            applicationIdSuffix ".staging"
+            debuggable true
+            buildConfigField "String", "ENVIRONMENT", '"STAGING"'
+            buildConfigField "String", "API_BASE_URL", '"https://staging-api.cafezinho.app/api/"'
+            buildConfigField "boolean", "ENABLE_LOGGING", "true"
+            signingConfig signingConfigs.debug
+        }
+        
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "ENVIRONMENT", '"PRODUCTION"'
+            buildConfigField "String", "API_BASE_URL", '"https://api.cafezinho.app/api/"'
+            buildConfigField "boolean", "ENABLE_LOGGING", "false"
+            
+            // TODO: Configurar signing config para release
+            // signingConfig signingConfigs.release
         }
     }
     
@@ -42,6 +66,7 @@ android {
     
     buildFeatures {
         compose true
+        buildConfig true
     }
     
     composeOptions {

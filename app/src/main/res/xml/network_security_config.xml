@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Configuração de segurança de rede para diferentes ambientes -->
+    
+    <!-- Domínios de produção - HTTPS obrigatório -->
+    <domain-config>
+        <domain includeSubdomains="true">cafezinho.app</domain>
+        <domain includeSubdomains="true">api.cafezinho.app</domain>
+        <domain includeSubdomains="true">cdn.cafezinho.app</domain>
+        <domain includeSubdomains="true">ws.cafezinho.app</domain>
+        <pin-set expiration="2025-12-31">
+            <!-- TODO: Adicionar SHA-256 hashes dos certificados SSL reais -->
+            <!-- <pin digest="SHA-256">HASH_DO_CERTIFICADO_PRINCIPAL</pin> -->
+            <!-- <pin digest="SHA-256">HASH_DO_CERTIFICADO_BACKUP</pin> -->
+        </pin-set>
+    </domain-config>
+    
+    <!-- Domínios de staging - HTTPS obrigatório -->
+    <domain-config>
+        <domain includeSubdomains="true">staging.cafezinho.app</domain>
+        <domain includeSubdomains="true">staging-api.cafezinho.app</domain>
+        <domain includeSubdomains="true">staging-cdn.cafezinho.app</domain>
+        <domain includeSubdomains="true">staging-ws.cafezinho.app</domain>
+    </domain-config>
+    
+    <!-- Desenvolvimento local - HTTP permitido apenas para debug -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain>10.0.2.2</domain> <!-- Android emulator localhost -->
+        <domain>localhost</domain>
+        <domain>127.0.0.1</domain>
+        <domain>192.168.1.1</domain> <!-- Rede local -->
+        <domain>192.168.0.1</domain> <!-- Rede local -->
+    </domain-config>
+    
+    <!-- Configuração padrão - HTTPS obrigatório -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system"/>
+        </trust-anchors>
+    </base-config>
+</network-security-config>

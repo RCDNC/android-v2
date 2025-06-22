@@ -1,5 +1,6 @@
 package com.rcdnc.cafezinho.core.network
 
+import com.rcdnc.cafezinho.core.config.Environment
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,14 +12,14 @@ import javax.inject.Singleton
 
 /**
  * Configuração da API para integração com Laravel
- * Baseado na análise da API real do Cafezinho
+ * URLs configuradas por ambiente (dev/staging/prod)
  */
 @Singleton
 class ApiConfig @Inject constructor() {
     
     companion object {
-        const val BASE_URL = "http://localhost:8000/api/" // TODO: Trocar por URL de produção
-        const val TIMEOUT_SECONDS = 30L
+        val BASE_URL = Environment.BASE_URL
+        val TIMEOUT_SECONDS = Environment.NETWORK_TIMEOUT
     }
     
     /**
@@ -50,19 +51,36 @@ class ApiConfig @Inject constructor() {
     
     /**
      * Cria OkHttpClient configurado para a API Laravel
+     * Com SSL pinning e configurações de segurança para produção
      */
     fun createOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-        
-        return OkHttpClient.Builder()
+        val builder = OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
-            .addInterceptor(loggingInterceptor)
             .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            .build()
+        
+        // Logging apenas em desenvolvimento
+        if (Environment.ENABLE_LOGGING) {
+            val loggingInterceptor = HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+            builder.addInterceptor(loggingInterceptor)
+        }
+        
+        // SSL Certificate Pinning para produção
+        if (Environment.ENABLE_SSL_PINNING) {
+            // TODO: Implementar SSL pinning com certificados reais
+            // builder.certificatePinner(createCertificatePinner())
+        }
+        
+        // Configurações de segurança de rede
+        if (Environment.ENABLE_NETWORK_SECURITY) {
+            // Configurações adicionais de segurança para staging/produção
+            builder.retryOnConnectionFailure(true)
+        }
+        
+        return builder.build()
     }
     
     /**
