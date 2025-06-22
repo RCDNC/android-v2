@@ -316,7 +316,7 @@ private fun ProfileTabContent(paddingValues: PaddingValues, onLogout: () -> Unit
             Spacer(modifier = Modifier.height(32.dp))
             
             Text(
-                text = "🚧 Em desenvolvimento - Issue #2922",
+                text = "✅ Perfil implementado! Navegação em breve...",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center
