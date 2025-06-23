@@ -9,8 +9,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Undo
-import androidx.compose.material.icons.outlined.SearchOff
+// import androidx.compose.material.icons.filled.Undo
+// import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -35,7 +35,7 @@ import com.rcdnc.cafezinho.features.swipe.domain.model.*
 import com.rcdnc.cafezinho.features.swipe.presentation.viewmodel.SwipeIntent
 import com.rcdnc.cafezinho.features.swipe.presentation.viewmodel.SwipeState
 import com.rcdnc.cafezinho.features.swipe.presentation.viewmodel.SwipeViewModel
-import com.rcdnc.cafezinho.ui.components.ComponentSize
+// import com.rcdnc.cafezinho.ui.components.ComponentSize // Removed - using direct dp values
 import com.rcdnc.cafezinho.ui.components.UserImage
 import com.rcdnc.cafezinho.ui.theme.*
 import kotlin.math.abs
@@ -52,6 +52,8 @@ fun SwipeScreen(
     onMatchFound: (SwipeUser) -> Unit = {},
     onFiltersClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
+    onNavigateToProfile: () -> Unit = {},
+    onNavigateToChat: (String) -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: SwipeViewModel = hiltViewModel()
 ) {
@@ -280,7 +282,7 @@ private fun SwipeTopBar(
         ) {
             IconButton(onClick = onFiltersClick) {
                 Icon(
-                    imageVector = Icons.Default.Tune,
+                    imageVector = Icons.Default.Settings,
                     contentDescription = "Filtros",
                     tint = CafezinhoPrimary
                 )
@@ -355,7 +357,7 @@ private fun SwipeCardStack(
     ) {
         users.forEachIndexed { index, user ->
             val scale = 1f - (index * 0.05f)
-            val offsetY = index * 8.dp
+            val offsetY = (index * 8).dp
             
             SwipeCard(
                 user = user,
@@ -577,7 +579,7 @@ private fun SwipeCard(
             // Swipe direction indicators
             if (isTopCard) {
                 // Like indicator
-                AnimatedVisibility(
+                androidx.compose.animation.AnimatedVisibility(
                     visible = offsetX > 50,
                     enter = fadeIn() + scaleIn(),
                     exit = fadeOut() + scaleOut(),
@@ -600,7 +602,7 @@ private fun SwipeCard(
                 }
                 
                 // Dislike indicator
-                AnimatedVisibility(
+                androidx.compose.animation.AnimatedVisibility(
                     visible = offsetX < -50,
                     enter = fadeIn() + scaleIn(),
                     exit = fadeOut() + scaleOut(),
@@ -623,7 +625,7 @@ private fun SwipeCard(
                 }
                 
                 // Super like indicator
-                AnimatedVisibility(
+                androidx.compose.animation.AnimatedVisibility(
                     visible = offsetY < -50,
                     enter = fadeIn() + scaleIn(),
                     exit = fadeOut() + scaleOut(),

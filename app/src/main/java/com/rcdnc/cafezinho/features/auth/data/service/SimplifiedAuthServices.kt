@@ -103,9 +103,9 @@ data class MockFirebaseUser(
     fun toUser(): User {
         return User(
             id = uid,
-            email = email,
-            phone = phoneNumber,
-            firstName = displayName?.split(" ")?.firstOrNull(),
+            email = email ?: "",
+            firstName = displayName?.split(" ")?.firstOrNull() ?: "",
+            phoneNumber = phoneNumber,
             isVerified = isEmailVerified || !phoneNumber.isNullOrEmpty()
         )
     }

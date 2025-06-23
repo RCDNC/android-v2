@@ -83,7 +83,7 @@ sealed class AuthError : Exception() {
     object TokenExpired : AuthError()
     object AccountNotVerified : AuthError()
     object TooManyAttempts : AuthError()
-    data class ValidationError(val field: String, val message: String) : AuthError()
+    data class ValidationError(val field: String, override val message: String) : AuthError()
     data class UnknownError(override val message: String) : AuthError()
 }
 

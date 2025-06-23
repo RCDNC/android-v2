@@ -1,8 +1,10 @@
 package com.rcdnc.cafezinho.features.auth.data.repository
 
+import android.app.Activity
 import com.rcdnc.cafezinho.core.auth.AuthManager
 import com.rcdnc.cafezinho.features.auth.domain.model.*
 import com.rcdnc.cafezinho.features.auth.domain.repository.AuthRepository
+import com.rcdnc.cafezinho.features.auth.mvi.RegistrationData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -279,5 +281,147 @@ class SimpleAuthRepositoryImpl @Inject constructor(
             createdAt = System.currentTimeMillis().toString(),
             updatedAt = System.currentTimeMillis().toString()
         )
+    }
+    
+    // Social Login Methods
+    override suspend fun signInWithGoogle(): Result<User> {
+        return try {
+            val user = createDemoUser("google@example.com")
+            _currentUser.value = user
+            _authStatus.value = AuthStatus.AUTHENTICATED
+            Result.success(user)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    override suspend fun signInWithFacebook(): Result<User> {
+        return try {
+            val user = createDemoUser("facebook@example.com")
+            _currentUser.value = user
+            _authStatus.value = AuthStatus.AUTHENTICATED
+            Result.success(user)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    // Phone Authentication Methods
+    override suspend fun sendPhoneVerification(phoneNumber: String, activity: Activity?): Result<String> {
+        return try {
+            // Mock verification ID
+            Result.success("mock_verification_id_${System.currentTimeMillis()}")
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    override suspend fun verifyPhoneOtp(verificationId: String, otp: String): Result<User> {
+        return try {
+            if (otp == "123456") {
+                val user = createDemoUser("phone@example.com")
+                _currentUser.value = user
+                _authStatus.value = AuthStatus.AUTHENTICATED
+                Result.success(user)
+            } else {
+                Result.failure(Exception("Invalid OTP"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    override suspend fun resendPhoneVerification(phoneNumber: String): Result<String> {
+        return try {
+            Result.success("mock_verification_id_${System.currentTimeMillis()}")
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    // Alternative Login Methods
+    override suspend fun signInWithEmail(email: String, password: String): Result<User> {
+        return try {
+            val user = createDemoUser(email)
+            _currentUser.value = user
+            _authStatus.value = AuthStatus.AUTHENTICATED
+            Result.success(user)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    override suspend fun signInWithPhone(phone: String, otp: String): Result<User> {
+        return try {
+            if (otp == "123456") {
+                val user = createDemoUser("$phone@example.com")
+                _currentUser.value = user
+                _authStatus.value = AuthStatus.AUTHENTICATED
+                Result.success(user)
+            } else {
+                Result.failure(Exception("Invalid OTP"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    override suspend fun signOut(): Result<Unit> {
+        return logout()
+    }
+    
+    // Registration Methods
+    override suspend fun completeRegistration(registrationData: RegistrationData): Result<User> {
+        return try {
+            val user = User(
+                id = "demo-${System.currentTimeMillis()}",
+                email = "${registrationData.phoneNumber}@example.com",
+                firstName = registrationData.firstName ?: "Demo",
+                lastName = null,
+                phoneNumber = registrationData.phoneNumber,
+                dateOfBirth = registrationData.dateOfBirth?.toString(),
+                gender = registrationData.gender,
+                isEmailVerified = false,
+                isPhoneVerified = true,
+                createdAt = System.currentTimeMillis().toString(),
+                updatedAt = System.currentTimeMillis().toString()
+            )
+            
+            _currentUser.value = user
+            _authStatus.value = AuthStatus.AUTHENTICATED
+            Result.success(user)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    override suspend fun getProfileCompletionStatus(userId: String): Result<Boolean> {
+        return try {
+            // Mock profile completion status
+            Result.success(true)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    // Session Management
+    override suspend fun refreshAuthToken(): Result<Unit> {
+        return try {
+            // Mock token refresh
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    // Validation Methods
+    override suspend fun validatePhoneNumber(phoneNumber: String): Result<String> {
+        return try {
+            // Simple validation - just format
+            val formatted = if (phoneNumber.startsWith("+")) phoneNumber else "+55$phoneNumber"
+            Result.success(formatted)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

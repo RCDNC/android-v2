@@ -14,11 +14,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.rcdnc.cafezinho.ui.components.CafezinhoButton
-import com.rcdnc.cafezinho.ui.components.ComponentSize
+// import com.rcdnc.cafezinho.ui.components.ComponentSize
 import com.rcdnc.cafezinho.ui.components.UserImage
 
 /**
- * Tela de edição do Profile
+ * Tela de ediï¿½ï¿½o do Profile
  * TODO: Integrar com EditProfileViewModel e API Laravel
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +30,7 @@ fun EditProfileScreen(
 ) {
     // TODO: Usar EditProfileViewModel real
     var name by remember { mutableStateOf("Demo User") }
-    var bio by remember { mutableStateOf("Apaixonado por café e boas conversas! ") }
+    var bio by remember { mutableStateOf("Apaixonado por cafï¿½ e boas conversas! ") }
     var age by remember { mutableStateOf("25") }
     var isLoading by remember { mutableStateOf(false) }
     
@@ -90,21 +90,20 @@ fun EditProfileScreen(
                 UserImage(
                     imageUrl = null,
                     contentDescription = "Foto do perfil",
-                    size = ComponentSize.ExtraLarge,
                     modifier = Modifier
                         .size(120.dp)
                         .clip(CircleShape)
                 )
                 
                 FloatingActionButton(
-                    onClick = { /* TODO: Implementar seleção de foto */ },
+                    onClick = { /* TODO: Implementar seleï¿½ï¿½o de foto */ },
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .size(40.dp),
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
                     Icon(
-                        imageVector = Icons.Default.CameraAlt,
+                        imageVector = Icons.Default.Edit,
                         contentDescription = "Trocar foto",
                         modifier = Modifier.size(20.dp)
                     )
@@ -154,7 +153,7 @@ fun EditProfileScreen(
                     label = { Text("Idade") },
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Default.CalendarMonth,
+                            imageVector = Icons.Default.DateRange,
                             contentDescription = null
                         )
                     },
@@ -165,10 +164,10 @@ fun EditProfileScreen(
                 OutlinedTextField(
                     value = bio,
                     onValueChange = { bio = it },
-                    label = { Text("Sobre você") },
+                    label = { Text("Sobre vocï¿½") },
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Default.Description,
+                            imageVector = Icons.Default.Edit,
                             contentDescription = null
                         )
                     },
@@ -183,7 +182,7 @@ fun EditProfileScreen(
         
         // Save Button
         CafezinhoButton(
-            text = if (isLoading) "Salvando..." else "Salvar Alterações",
+            text = if (isLoading) "Salvando..." else "Salvar Alteraï¿½ï¿½es",
             onClick = {
                 isLoading = true
                 // TODO: Implementar salvamento
@@ -222,7 +221,7 @@ fun EditProfileScreen(
                 )
                 
                 Text(
-                    text = "Integração com API em desenvolvimento...",
+                    text = "Integraï¿½ï¿½o com API em desenvolvimento...",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

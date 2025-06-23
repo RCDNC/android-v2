@@ -7,6 +7,7 @@ import com.rcdnc.cafezinho.features.swipe.domain.repository.SwipeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -222,21 +223,9 @@ class SwipeRepositoryImpl @Inject constructor(
     }
     
     override fun observeUserMetrics(userId: String): Flow<SwipeMetrics> {
-        return _userMetricsCache.asStateFlow()
-            .let { flow ->
-                // Se não há dados em cache, busca na API
-                kotlinx.coroutines.GlobalScope.launch {
-                    if (_userMetricsCache.value == null) {
-                        getUserMetrics(userId)
-                    }
-                }
-                flow
-            }
-            .let { flow ->
-                kotlinx.coroutines.flow.map(flow) { metrics ->
-                    metrics ?: SwipeMetrics() // Retorna métricas padrão se null
-                }
-            }
+        return _userMetricsCache.asStateFlow().map { metrics ->
+            metrics ?: SwipeMetrics() // Retorna métricas padrão se null
+        }
     }
     
     override suspend fun markUserAsViewed(

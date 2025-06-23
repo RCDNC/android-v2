@@ -99,18 +99,21 @@ class MatchRepositoryImpl @Inject constructor(
         return try {
             // A API não tem endpoint específico para um match individual
             // Implementação via getUserMatches e filtro local
-            getUserMatches(userId).collect { result ->
-                result.fold(
+            val allMatches = getUserMatches(userId)
+            var result: Result<Match?> = Result.success(null)
+            
+            allMatches.collect { matchesResult ->
+                result = matchesResult.fold(
                     onSuccess = { matches ->
                         val match = matches.find { it.otherUserId == otherUserId }
-                        return Result.success(match)
+                        Result.success(match)
                     },
                     onFailure = { exception ->
-                        return Result.failure(exception)
+                        Result.failure(exception)
                     }
                 )
             }
-            Result.success(null)
+            result
         } catch (e: Exception) {
             Result.failure(e)
         }

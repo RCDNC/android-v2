@@ -25,7 +25,7 @@ import com.rcdnc.cafezinho.features.chat.domain.model.MessageType
 // MessageInput e MessageItem components existentes
 import com.rcdnc.cafezinho.ui.components.UserImage
 import com.rcdnc.cafezinho.ui.theme.*
-import com.rcdnc.cafezinho.ui.components.ComponentSize
+// import com.rcdnc.cafezinho.ui.components.ComponentSize
 import kotlinx.coroutines.launch
 
 /**
@@ -178,9 +178,10 @@ private fun ChatTopBar(
                 Box {
                     UserImage(
                         imageUrl = userAvatar,
-                        size = ComponentSize.Large,
                         contentDescription = "Avatar de $userName",
-                        modifier = Modifier.clip(CircleShape)
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
                     )
                     
                     // Indicador online
@@ -325,15 +326,9 @@ private fun shouldShowTimestamp(
 private fun ChatScreenPreview() {
     CafezinhoTheme {
         ChatScreen(
-            otherUserName = "Ana Silva",
-            otherUserAvatar = "https://example.com/avatar.jpg",
-            isOnline = true,
-            messages = sampleMessages,
-            currentUserId = "me",
-            isTyping = false,
+            userId = "ana_silva",
             onBackClick = { },
-            onMenuClick = { },
-            onSendMessage = { }
+            onUserProfileClick = { }
         )
     }
 }
@@ -343,15 +338,9 @@ private fun ChatScreenPreview() {
 private fun ChatScreenTypingPreview() {
     CafezinhoTheme {
         ChatScreen(
-            otherUserName = "Ana Silva",
-            otherUserAvatar = "https://example.com/avatar.jpg",
-            isOnline = true,
-            messages = sampleMessages.take(2),
-            currentUserId = "me",
-            isTyping = true,
+            userId = "ana_silva",
             onBackClick = { },
-            onMenuClick = { },
-            onSendMessage = { }
+            onUserProfileClick = { }
         )
     }
 }

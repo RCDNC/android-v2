@@ -56,7 +56,8 @@ fun AppNavigation(
         // Login Screen
         composable("login") {
             LoginScreen(
-                onNavigateToMain = {
+                onLoginClick = { email, password, rememberMe ->
+                    // Handle login logic here
                     navController.navigate("tutorial") {
                         popUpTo("login") { inclusive = true }
                     }

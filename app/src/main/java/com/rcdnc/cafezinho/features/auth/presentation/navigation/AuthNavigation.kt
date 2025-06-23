@@ -22,7 +22,9 @@ fun AuthNavigation(
     ) {
         composable("login") {
             LoginScreen(
-                onNavigateToMain = onAuthComplete
+                onLoginClick = { email, password, rememberMe ->
+                    onAuthComplete()
+                }
             )
         }
         

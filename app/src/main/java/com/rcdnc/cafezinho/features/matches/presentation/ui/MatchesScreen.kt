@@ -33,7 +33,7 @@ import com.rcdnc.cafezinho.features.matches.domain.model.Match
 import com.rcdnc.cafezinho.features.matches.presentation.viewmodel.MatchesIntent
 import com.rcdnc.cafezinho.features.matches.presentation.viewmodel.MatchesState
 import com.rcdnc.cafezinho.features.matches.presentation.viewmodel.MatchesViewModel
-import com.rcdnc.cafezinho.ui.components.ComponentSize
+// import com.rcdnc.cafezinho.ui.components.ComponentSize
 import com.rcdnc.cafezinho.ui.components.UserImage
 import com.rcdnc.cafezinho.ui.theme.*
 
@@ -58,10 +58,10 @@ fun MatchesScreen(
     
     // Handle navigation
     LaunchedEffect(state) {
-        when (state) {
+        when (val currentState = state) {
             is MatchesState.NavigateToChat -> {
                 // Encontra o match pelo userId e chama callback
-                val match = matches.find { it.otherUserId == state.otherUserId }
+                val match = matches.find { it.otherUserId == currentState.otherUserId }
                 if (match != null) {
                     onMatchClick(match)
                 }
@@ -102,18 +102,15 @@ fun MatchesScreen(
         }
         
         // Content
-        SwipeRefresh(
-            state = swipeRefreshState,
-            onRefresh = { viewModel.handleIntent(MatchesIntent.RefreshMatches) }
-        ) {
-            when (state) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            when (val currentState = state) {
                 is MatchesState.Loading -> {
                     LoadingState()
                 }
                 
                 is MatchesState.Success -> {
                     MatchesGrid(
-                        matches = matches,
+                        matches = currentState.matches,
                         onMatchClick = { match ->
                             viewModel.handleIntent(MatchesIntent.OpenChat(match.otherUserId))
                         },
@@ -129,7 +126,7 @@ fun MatchesScreen(
                 
                 is MatchesState.Error -> {
                     ErrorState(
-                        message = state.message,
+                        message = currentState.message,
                         onRetry = { viewModel.handleIntent(MatchesIntent.RefreshMatches) }
                     )
                 }
@@ -212,9 +209,10 @@ private fun MatchCard(
                 Box {
                     UserImage(
                         imageUrl = match.otherUserAvatar,
-                        size = ComponentSize.ExtraLarge,
                         contentDescription = "Foto de ${match.otherUserName}",
-                        modifier = Modifier.clip(CircleShape)
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape)
                     )
                     
                     // Badge para usuário premium

@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.rcdnc.cafezinho.ui.components.CafezinhoButton
-import com.rcdnc.cafezinho.ui.components.ComponentSize
+// import com.rcdnc.cafezinho.ui.components.ComponentSize
 import com.rcdnc.cafezinho.ui.components.UserImage
 
 /**
@@ -55,7 +55,6 @@ fun ProfileScreen(
         UserImage(
             imageUrl = null,
             contentDescription = "Foto do perfil",
-            size = ComponentSize.ExtraLarge,
             modifier = Modifier
                 .size(120.dp)
                 .clip(CircleShape)

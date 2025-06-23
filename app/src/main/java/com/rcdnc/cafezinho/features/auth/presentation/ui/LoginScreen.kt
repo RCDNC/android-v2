@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -61,7 +62,7 @@ fun LoginScreen(
         ) {
             // Logo
             Icon(
-                imageVector = Icons.Default.Coffee,
+                imageVector = Icons.Default.FavoriteBorder,
                 contentDescription = "Cafezinho Logo",
                 modifier = Modifier.size(80.dp),
                 tint = CafezinhoPrimary
@@ -127,7 +128,7 @@ fun LoginScreen(
                         trailingIcon = {
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                 Icon(
-                                    imageVector = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                    imageVector = Icons.Default.Edit,
                                     contentDescription = if (passwordVisible) "Ocultar senha" else "Mostrar senha"
                                 )
                             }

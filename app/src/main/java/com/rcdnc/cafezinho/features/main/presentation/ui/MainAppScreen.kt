@@ -42,14 +42,14 @@ val navigationItems = listOf(
     ),
     NavigationItem(
         title = "Matches",
-        selectedIcon = Icons.Filled.Message,
-        unselectedIcon = Icons.Outlined.Message,
+        selectedIcon = Icons.Filled.Email,
+        unselectedIcon = Icons.Outlined.Email,
         route = CafezinhoNavigation.MATCHES
     ),
     NavigationItem(
         title = "Chat",
-        selectedIcon = Icons.Filled.Chat,
-        unselectedIcon = Icons.Outlined.Chat,
+        selectedIcon = Icons.Filled.Email,
+        unselectedIcon = Icons.Outlined.Email,
         route = CafezinhoNavigation.CHAT_LIST
     ),
     NavigationItem(

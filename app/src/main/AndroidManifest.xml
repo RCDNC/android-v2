@@ -84,12 +84,23 @@
         
         <!-- Firebase Cloud Messaging Service -->
         <service
-            android:name=".core.notifications.FirebaseMessagingService"
+            android:name=".core.notifications.CafezinhoFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        
+        <!-- Firebase Notification Metadata -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/cafezinho_primary" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="cafezinho_default_channel" />
         
         <activity
             android:name=".MainActivity"

@@ -1,6 +1,8 @@
 package com.rcdnc.cafezinho.features.auth.domain.repository
 
+import android.app.Activity
 import com.rcdnc.cafezinho.features.auth.domain.model.*
+import com.rcdnc.cafezinho.features.auth.mvi.RegistrationData
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -107,4 +109,28 @@ interface AuthRepository {
      * Clear de todos os dados de autenticação (logout local)
      */
     suspend fun clearAuthData(): Result<Unit>
+    
+    // Social Login Methods
+    suspend fun signInWithGoogle(): Result<User>
+    suspend fun signInWithFacebook(): Result<User>
+    
+    // Phone Authentication Methods
+    suspend fun sendPhoneVerification(phoneNumber: String, activity: Activity? = null): Result<String>
+    suspend fun verifyPhoneOtp(verificationId: String, otp: String): Result<User>
+    suspend fun resendPhoneVerification(phoneNumber: String): Result<String>
+    
+    // Alternative Login Methods
+    suspend fun signInWithEmail(email: String, password: String): Result<User>
+    suspend fun signInWithPhone(phone: String, otp: String): Result<User>
+    suspend fun signOut(): Result<Unit>
+    
+    // Registration Methods
+    suspend fun completeRegistration(registrationData: RegistrationData): Result<User>
+    suspend fun getProfileCompletionStatus(userId: String): Result<Boolean>
+    
+    // Session Management
+    suspend fun refreshAuthToken(): Result<Unit>
+    
+    // Validation Methods
+    suspend fun validatePhoneNumber(phoneNumber: String): Result<String>
 }
