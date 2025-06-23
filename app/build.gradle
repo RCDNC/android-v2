@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
@@ -69,9 +70,6 @@ android {
         buildConfig true
     }
     
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.5.15'
-    }
     
     packagingOptions {
         resources {
@@ -84,18 +82,25 @@ dependencies {
     // Shared module
     implementation project(':shared')
     
-    // Compose BOM - Updated to latest
-    implementation platform('androidx.compose:compose-bom:2025.01.01')
+    // Compose BOM
+    implementation platform('androidx.compose:compose-bom:2024.12.01')
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
     implementation 'androidx.compose.foundation:foundation'
     
+<<<<<<< Updated upstream
     // Activity Compose - Updated
     implementation 'androidx.activity:activity-compose:1.9.3'
     
     // Navigation Compose - Updated
+=======
+    // Activity Compose
+    implementation 'androidx.activity:activity-compose:1.9.3'
+    
+    // Navigation Compose
+>>>>>>> Stashed changes
     implementation 'androidx.navigation:navigation-compose:2.8.5'
     implementation 'androidx.hilt:hilt-navigation-compose:1.2.0'
     
@@ -104,12 +109,21 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7'
     implementation 'androidx.lifecycle:lifecycle-runtime-compose:2.8.7'
     
+<<<<<<< Updated upstream
     // Hilt - Updated to compatible version with Kotlin 1.9.25
     implementation 'com.google.dagger:hilt-android:2.49'
     kapt 'com.google.dagger:hilt-compiler:2.49'
     
     // Coroutines - Updated
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
+=======
+    // Hilt
+    implementation 'com.google.dagger:hilt-android:2.56.2'
+    kapt 'com.google.dagger:hilt-compiler:2.56.2'
+    
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0'
+>>>>>>> Stashed changes
     
     // Retrofit & Networking - Updated
     implementation 'com.squareup.retrofit2:retrofit:2.11.0'
@@ -117,6 +131,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
     implementation 'com.google.code.gson:gson:2.11.0'
     
+<<<<<<< Updated upstream
     // Core Android - Updated
     implementation 'androidx.core:core-ktx:1.15.0'
     
@@ -125,6 +140,16 @@ dependencies {
     // implementation 'com.google.firebase:firebase-messaging-ktx'
     // implementation 'com.google.firebase:firebase-analytics-ktx'
     // implementation 'com.google.firebase:firebase-crashlytics-ktx'
+=======
+    // Core Android  
+    implementation 'androidx.core:core-ktx:1.13.1'
+    
+    // Firebase & Push Notifications
+    implementation platform('com.google.firebase:firebase-bom:33.6.0')
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+>>>>>>> Stashed changes
     
     // Google Auth (Credential Manager - Compatible with API 34) - Updated
     implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.1'
@@ -143,7 +168,11 @@ dependencies {
     // DataStore (replace SharedPreferences) - Updated
     implementation 'androidx.datastore:datastore-preferences:1.1.1'
     
+<<<<<<< Updated upstream
     // Image Loading (for profile photos) - Updated to available version
+=======
+    // Image Loading (for profile photos)
+>>>>>>> Stashed changes
     implementation 'io.coil-kt:coil-compose:2.7.0'
     
     // Date Picker (for DOB) - Temporarily disabled
@@ -166,9 +195,15 @@ dependencies {
     // ArchCore testing for LiveData
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
     
+<<<<<<< Updated upstream
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     androidTestImplementation platform('androidx.compose:compose-bom:2025.01.01')
+=======
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation platform('androidx.compose:compose-bom:2024.12.01')
+>>>>>>> Stashed changes
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     
     debugImplementation 'androidx.compose.ui:ui-tooling'

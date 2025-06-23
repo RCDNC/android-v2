@@ -16,6 +16,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+<<<<<<< Updated upstream
                 // Coroutines - Updated
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
                 
@@ -27,6 +28,19 @@ kotlin {
                 implementation("io.ktor:ktor-client-content-negotiation:2.3.12")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
                 implementation("io.ktor:ktor-client-logging:2.3.12")
+=======
+                // Coroutines
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+                
+                // Serialization
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+                
+                // Ktor Client
+                implementation("io.ktor:ktor-client-core:3.0.2")
+                implementation("io.ktor:ktor-client-content-negotiation:3.0.2")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.2")
+                implementation("io.ktor:ktor-client-logging:3.0.2")
+>>>>>>> Stashed changes
                 
                 // DateTime - Updated
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
@@ -36,14 +50,23 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+<<<<<<< Updated upstream
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+=======
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+>>>>>>> Stashed changes
             }
         }
         
         val androidMain by getting {
             dependencies {
+<<<<<<< Updated upstream
                 implementation("io.ktor:ktor-client-android:2.3.12")
                 implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+=======
+                implementation("io.ktor:ktor-client-android:3.0.2")
+                implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+>>>>>>> Stashed changes
             }
         }
         

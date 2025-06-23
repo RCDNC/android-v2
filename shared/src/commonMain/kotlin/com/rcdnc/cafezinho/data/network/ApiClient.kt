@@ -6,7 +6,7 @@ import io.ktor.client.plugins.logging.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 
-expect class PlatformApiClient {
+expect class PlatformApiClient() {
     fun createHttpClient(): HttpClient
 }
 
@@ -14,18 +14,8 @@ object ApiClient {
     private val platformClient = PlatformApiClient()
     
     val httpClient: HttpClient by lazy {
-        platformClient.createHttpClient().config {
-            install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                    isLenient = true
-                    prettyPrint = true
-                })
-            }
-            
-            install(Logging) {
-                level = LogLevel.INFO
-            }
+        platformClient.createHttpClient().apply {
+            // Configure client after creation
         }
     }
 }
