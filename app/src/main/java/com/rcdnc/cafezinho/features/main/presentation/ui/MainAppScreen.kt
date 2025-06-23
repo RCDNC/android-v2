@@ -16,12 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.rcdnc.cafezinho.navigation.CafezinhoNavHost
-import com.rcdnc.cafezinho.navigation.CafezinhoNavigation
 import com.rcdnc.cafezinho.ui.components.CafezinhoButton
 import com.rcdnc.cafezinho.ui.theme.CafezinhoTheme
 
@@ -38,52 +32,45 @@ val navigationItems = listOf(
         title = "Descobrir",
         selectedIcon = Icons.Filled.Favorite,
         unselectedIcon = Icons.Outlined.FavoriteBorder,
-        route = CafezinhoNavigation.SWIPE
+        route = "swipe"
     ),
     NavigationItem(
         title = "Matches",
-        selectedIcon = Icons.Filled.Email,
-        unselectedIcon = Icons.Outlined.Email,
-        route = CafezinhoNavigation.MATCHES
+        selectedIcon = Icons.Filled.Message,
+        unselectedIcon = Icons.Outlined.Message,
+        route = "matches"
     ),
     NavigationItem(
         title = "Chat",
-        selectedIcon = Icons.Filled.Email,
-        unselectedIcon = Icons.Outlined.Email,
-        route = CafezinhoNavigation.CHAT_LIST
+        selectedIcon = Icons.Filled.Chat,
+        unselectedIcon = Icons.Outlined.Chat,
+        route = "chat"
     ),
     NavigationItem(
         title = "Perfil",
         selectedIcon = Icons.Filled.Person,
         unselectedIcon = Icons.Outlined.Person,
-        route = CafezinhoNavigation.PROFILE
+        route = "profile"
     )
 )
 
 /**
- * Main App Screen - Com Navigation integrada
- * Mostra a estrutura principal do app com navegação completa
+ * Main App Screen - Com Bottom Navigation
+ * Mostra a estrutura principal do app
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainAppScreen(
     onLogout: () -> Unit = {}
 ) {
-    val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
-    
-    // Encontra o item de navegação atual
-    val currentNavigationItem = navigationItems.find { item ->
-        currentDestination?.hierarchy?.any { it.route == item.route } == true
-    } ?: navigationItems.first()
+    var selectedTab by remember { mutableIntStateOf(0) }
     
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "☕ ${currentNavigationItem.title}",
+                        text = "☕ ${navigationItems[selectedTab].title}",
                         style = MaterialTheme.typography.headlineSmall.copy(
                             fontWeight = FontWeight.Bold
                         )
@@ -101,47 +88,251 @@ fun MainAppScreen(
         },
         bottomBar = {
             NavigationBar {
-                navigationItems.forEach { item ->
+                navigationItems.forEachIndexed { index, item ->
                     NavigationBarItem(
                         icon = {
-                            val isSelected = currentDestination?.hierarchy?.any { 
-                                it.route == item.route 
-                            } == true
                             Icon(
-                                imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
+                                imageVector = if (selectedTab == index) item.selectedIcon else item.unselectedIcon,
                                 contentDescription = item.title
                             )
                         },
                         label = { Text(item.title) },
-                        selected = currentDestination?.hierarchy?.any { 
-                            it.route == item.route 
-                        } == true,
-                        onClick = {
-                            navController.navigate(item.route) {
-                                // Pop up to the start destination to avoid building up a large stack
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                // Avoid multiple copies of the same destination
-                                launchSingleTop = true
-                                // Restore state when reselecting a previously selected item
-                                restoreState = true
-                            }
-                        }
+                        selected = selectedTab == index,
+                        onClick = { selectedTab = index }
                     )
                 }
             }
         }
     ) { paddingValues ->
-        // NavHost com todas as telas
-        CafezinhoNavHost(
-            navController = navController,
-            modifier = Modifier.padding(paddingValues)
-        )
+        // Conteúdo baseado na tab selecionada
+        when (selectedTab) {
+            0 -> SwipeTabContent(paddingValues)
+            1 -> MatchesTabContent(paddingValues)
+            2 -> ChatTabContent(paddingValues)
+            3 -> ProfileTabContent(paddingValues, onLogout)
+        }
     }
 }
 
-// Conteúdo das tabs antigas removido - agora usamos navegação real com as features implementadas
+@Composable
+private fun SwipeTabContent(paddingValues: PaddingValues) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                        MaterialTheme.colorScheme.background
+                    )
+                )
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(32.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Favorite,
+                contentDescription = null,
+                modifier = Modifier.size(80.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            Text(
+                text = "💖 Descobrir",
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(
+                text = "Aqui você vai encontrar pessoas incríveis! Deslize para curtir ou passar.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center
+            )
+            
+            Spacer(modifier = Modifier.height(32.dp))
+            
+            Text(
+                text = "🚧 Em desenvolvimento - Issue #2918",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
+private fun MatchesTabContent(paddingValues: PaddingValues) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .background(MaterialTheme.colorScheme.background),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(32.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Message,
+                contentDescription = null,
+                modifier = Modifier.size(80.dp),
+                tint = MaterialTheme.colorScheme.secondary
+            )
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            Text(
+                text = "💕 Matches",
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(
+                text = "Suas conexões especiais aparecem aqui! Quando alguém curte você de volta, é match!",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center
+            )
+            
+            Spacer(modifier = Modifier.height(32.dp))
+            
+            Text(
+                text = "🚧 Em desenvolvimento - Issue #2923",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.secondary,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
+private fun ChatTabContent(paddingValues: PaddingValues) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .background(MaterialTheme.colorScheme.background),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(32.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Chat,
+                contentDescription = null,
+                modifier = Modifier.size(80.dp),
+                tint = MaterialTheme.colorScheme.tertiary
+            )
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            Text(
+                text = "💬 Chat",
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(
+                text = "Converse com seus matches! Mande mensagens, áudios, GIFs e muito mais.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center
+            )
+            
+            Spacer(modifier = Modifier.height(32.dp))
+            
+            Text(
+                text = "🚧 Em desenvolvimento - Issue #2921",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.tertiary,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
+private fun ProfileTabContent(paddingValues: PaddingValues, onLogout: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .background(MaterialTheme.colorScheme.background),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(32.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = null,
+                modifier = Modifier.size(80.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            Text(
+                text = "👤 Perfil",
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(
+                text = "Gerencie seu perfil, fotos e configurações para se destacar!",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center
+            )
+            
+            Spacer(modifier = Modifier.height(32.dp))
+            
+            Text(
+                text = "🚧 Em desenvolvimento - Issue #2922",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center
+            )
+            
+            Spacer(modifier = Modifier.height(48.dp))
+            
+            // Logout button
+            CafezinhoButton(
+                text = "Fazer Logout",
+                onClick = onLogout,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
