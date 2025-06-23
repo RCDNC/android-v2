@@ -22,17 +22,22 @@ fun MyApplicationTheme(
 ) {
     val colors = if (darkTheme) {
         darkColorScheme(
-            primary = Color(0xFFBB86FC),
-            secondary = Color(0xFF03DAC5),
-            tertiary = Color(0xFF3700B3)
+            primary = Color(0xFF0087F9),
+            background = Color(0xFF181A20),
+            surface = Color(0xFF1F222A),
+            onBackground = Color(0xFFFAFAFA),
+            onSurface = Color(0xFFFAF9F6),
         )
     } else {
         lightColorScheme(
-            primary = Color(0xFF6200EE),
-            secondary = Color(0xFF03DAC5),
-            tertiary = Color(0xFF3700B3)
+            primary = Color(0xFF0087F9),
+            background = Color(0xFFFAFAFA),
+            surface = Color(0xFFFAF9F6),
+            onBackground = Color(0xFF181A20),
+            onSurface = Color(0xFF1F222A),
         )
     }
+
     val typography = Typography(
         bodyMedium = TextStyle(
             fontFamily = FontFamily.Default,
@@ -52,4 +57,22 @@ fun MyApplicationTheme(
         shapes = shapes,
         content = content
     )
+}
+
+object CustomAppColors {
+
+    // Consumíveis
+    val Boost = Color(0xFF9D28AC)
+    val Like = Color(0xFF60A74B)
+    val Superlike = Color(0xFF0087F9)
+
+    // Planos
+    val Plus = Color(0xFF0087F9)
+    val Gold = Color(0xFFFF981F)
+    val Platinum = Color(0xFF20272F)
+
+    // Ações
+    val Success = Color(0xFF60A74B)
+    val Error = Color(0xFFF75555)
+    val Attention = Color(0xFFFFBE00)
 }
