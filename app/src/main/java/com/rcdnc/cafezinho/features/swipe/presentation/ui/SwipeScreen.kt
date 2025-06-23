@@ -48,8 +48,10 @@ import kotlin.math.sign
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwipeScreen(
-    onNavigateToChat: (String) -> Unit = {},
-    onNavigateToProfile: () -> Unit = {},
+    onUserClick: (SwipeUser) -> Unit = {},
+    onMatchFound: (SwipeUser) -> Unit = {},
+    onFiltersClick: () -> Unit = {},
+    onBackClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: SwipeViewModel = hiltViewModel()
 ) {
@@ -69,9 +71,11 @@ fun SwipeScreen(
             is SwipeState.MatchFound -> {
                 matchedUser = currentState.result.user
                 showMatchDialog = true
+                onMatchFound(currentState.result.user)
             }
             is SwipeState.ShowingUserDetails -> {
                 showUserDetailsDialog = currentState.user
+                onUserClick(currentState.user)
             }
             else -> {}
         }

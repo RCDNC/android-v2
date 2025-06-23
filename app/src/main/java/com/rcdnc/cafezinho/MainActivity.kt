@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
                         isLoading = true
                         errorMessage = null
                         
-                        val success = authManager.loginDemo(email, password)
+                        val success = authManager.demoLogin(email, password)
                         
                         if (!success) {
                             errorMessage = "Email ou senha incorretos"

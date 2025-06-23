@@ -12,10 +12,13 @@ data class User(
     val phoneNumber: String? = null,
     val dateOfBirth: String? = null,
     val gender: String? = null,
+    val isEmailVerified: Boolean = false,
+    val isPhoneVerified: Boolean = false,
     val isVerified: Boolean = false,
     val isPremium: Boolean = false,
     val profileCompletion: Int = 0,
-    val createdAt: Long = System.currentTimeMillis(),
+    val createdAt: String = System.currentTimeMillis().toString(),
+    val updatedAt: String = System.currentTimeMillis().toString(),
     val lastLoginAt: Long? = null
 )
 
@@ -48,11 +51,14 @@ data class RegisterData(
  */
 data class AuthResult(
     val user: User,
-    val accessToken: String,
+    val token: String,
     val refreshToken: String? = null,
     val tokenType: String = "Bearer",
     val expiresIn: Long = 0
-)
+) {
+    // Compatibility property
+    val accessToken: String get() = token
+}
 
 /**
  * Estados de autenticação

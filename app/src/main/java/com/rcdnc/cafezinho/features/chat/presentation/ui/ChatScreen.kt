@@ -35,19 +35,23 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
-    otherUserName: String,
-    otherUserAvatar: String?,
-    isOnline: Boolean,
-    messages: List<Message>,
-    currentUserId: String,
-    isTyping: Boolean = false,
-    onBackClick: () -> Unit,
-    onMenuClick: () -> Unit,
-    onSendMessage: (String) -> Unit,
-    onSendVoiceMessage: (String) -> Unit = { },
-    onSendImage: () -> Unit = { },
+    userId: String,
+    onBackClick: () -> Unit = {},
+    onUserProfileClick: (Any) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    // TODO: Usar ChatViewModel para carregar dados do userId
+    val otherUserName = "Usuário $userId"
+    val otherUserAvatar: String? = null
+    val isOnline = false
+    val messages = remember { emptyList<Message>() }
+    val currentUserId = "me"
+    val isTyping = false
+    
+    val onMenuClick = { onUserProfileClick(userId) }
+    val onSendMessage: (String) -> Unit = { /* TODO: Implementar envio */ }
+    val onSendVoiceMessage: (String) -> Unit = { /* TODO: Implementar áudio */ }
+    val onSendImage: () -> Unit = { /* TODO: Implementar imagem */ }
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     

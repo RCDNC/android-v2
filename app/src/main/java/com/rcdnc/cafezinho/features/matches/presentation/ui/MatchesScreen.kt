@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+// import com.google.accompanist.swiperefresh.SwipeRefresh
+// import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.rcdnc.cafezinho.features.matches.domain.model.Match
 import com.rcdnc.cafezinho.features.matches.presentation.viewmodel.MatchesIntent
 import com.rcdnc.cafezinho.features.matches.presentation.viewmodel.MatchesState
@@ -44,7 +44,9 @@ import com.rcdnc.cafezinho.ui.theme.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MatchesScreen(
-    onNavigateToChat: (String) -> Unit,
+    onMatchClick: (Match) -> Unit = {},
+    onMatchDetail: (Match) -> Unit = {},
+    onBackClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: MatchesViewModel = hiltViewModel()
 ) {
@@ -52,13 +54,17 @@ fun MatchesScreen(
     val matches by viewModel.matches.collectAsStateWithLifecycle()
     
     val isRefreshing = state is MatchesState.Loading
-    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing)
+    // val swipeRefreshState = rememberSwipeRefreshState(isRefreshing)
     
     // Handle navigation
     LaunchedEffect(state) {
         when (state) {
             is MatchesState.NavigateToChat -> {
-                onNavigateToChat(state.otherUserId)
+                // Encontra o match pelo userId e chama callback
+                val match = matches.find { it.otherUserId == state.otherUserId }
+                if (match != null) {
+                    onMatchClick(match)
+                }
                 viewModel.handleIntent(MatchesIntent.ClearError)
             }
             else -> { /* No action needed */ }

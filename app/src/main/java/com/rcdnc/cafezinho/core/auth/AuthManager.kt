@@ -98,6 +98,30 @@ class AuthManager @Inject constructor(
     }
     
     /**
+     * Demo login para desenvolvimento
+     */
+    suspend fun demoLogin(email: String, password: String): Boolean {
+        // Demo validation
+        if (email.isNotBlank() && password.isNotBlank()) {
+            saveAuthData(
+                token = "demo-token-${System.currentTimeMillis()}",
+                userId = "demo-user-${email.hashCode()}",
+                email = email,
+                name = email.substringBefore("@").replaceFirstChar { it.uppercase() }
+            )
+            return true
+        }
+        return false
+    }
+    
+    /**
+     * Logout compatível
+     */
+    suspend fun logout() {
+        clearAuthData()
+    }
+    
+    /**
      * Formata token para header Authorization
      */
     suspend fun getAuthHeader(): String? {
