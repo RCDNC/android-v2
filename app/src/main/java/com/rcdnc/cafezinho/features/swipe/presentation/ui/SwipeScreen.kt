@@ -9,6 +9,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Undo
+import androidx.compose.material.icons.outlined.SearchOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -260,7 +262,7 @@ private fun SwipeTopBar(
             
             if (userMetrics?.isPremium == true) {
                 MetricChip(
-                    icon = Icons.Default.Undo,
+                    icon = Icons.Default.Refresh, // Using Refresh as substitute for Undo
                     count = userMetrics.let { it.rewindsLimit - it.rewindsUsed },
                     color = CafezinhoPrimary
                 )
@@ -669,7 +671,7 @@ private fun SwipeActionButtons(
         ActionButton(
             onClick = onRewindClick,
             enabled = canRewind,
-            icon = Icons.Default.Undo,
+            icon = Icons.Default.Refresh, // Using Refresh as substitute for Undo
             color = CafezinhoPrimary,
             size = 48.dp
         )
@@ -788,7 +790,7 @@ private fun NoMoreUsersCard(
                 modifier = Modifier.padding(32.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.SearchOff,
+                    imageVector = Icons.Default.Search, // Using Search as substitute for SearchOff
                     contentDescription = null,
                     modifier = Modifier.size(64.dp),
                     tint = CafezinhoPrimary

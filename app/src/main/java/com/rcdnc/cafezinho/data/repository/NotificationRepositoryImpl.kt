@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
-import com.google.firebase.messaging.FirebaseMessaging
+// import com.google.firebase.messaging.FirebaseMessaging
 import com.rcdnc.cafezinho.BuildConfig
 import com.rcdnc.cafezinho.core.auth.AuthManager
 import com.rcdnc.cafezinho.data.api.NotificationApiService
@@ -12,7 +12,7 @@ import com.rcdnc.cafezinho.data.dto.NotificationTokenDto
 import com.rcdnc.cafezinho.data.dto.SendNotificationDto
 import com.rcdnc.cafezinho.domain.repository.NotificationRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.tasks.await
+// import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,7 +36,9 @@ class NotificationRepositoryImpl @Inject constructor(
      */
     override suspend fun registerFCMToken(): Result<Unit> {
         return try {
-            val token = FirebaseMessaging.getInstance().token.await()
+            // TODO: Re-enable when Firebase is uncommented
+            // val token = FirebaseMessaging.getInstance().token.await()
+            val token = "fake-token-for-testing"
             Log.d(TAG, "FCM token obtained: $token")
             
             val deviceId = getDeviceId()

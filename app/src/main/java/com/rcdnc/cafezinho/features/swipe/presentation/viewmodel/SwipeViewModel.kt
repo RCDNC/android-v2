@@ -346,12 +346,12 @@ sealed class SwipeState {
  */
 sealed class SwipeIntent {
     data class LoadUsers(val refresh: Boolean = false) : SwipeIntent()
-    data class SwipeUser(val user: SwipeUser, val action: SwipeAction) : SwipeIntent()
+    data class SwipeUser(val user: com.rcdnc.cafezinho.features.swipe.domain.model.SwipeUser, val action: SwipeAction) : SwipeIntent()
     object RewindLastSwipe : SwipeIntent()
     data class UpdateFilters(val filters: SwipeFilters) : SwipeIntent()
     object LoadMoreUsers : SwipeIntent()
-    data class ReportUser(val user: SwipeUser, val reason: String) : SwipeIntent()
-    data class ShowUserDetails(val user: SwipeUser) : SwipeIntent()
+    data class ReportUser(val user: com.rcdnc.cafezinho.features.swipe.domain.model.SwipeUser, val reason: String) : SwipeIntent()
+    data class ShowUserDetails(val user: com.rcdnc.cafezinho.features.swipe.domain.model.SwipeUser) : SwipeIntent()
     object LoadMetrics : SwipeIntent()
     object ClearError : SwipeIntent()
 }

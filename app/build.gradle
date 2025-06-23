@@ -4,7 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
-    id 'com.google.gms.google-services'
+    // id 'com.google.gms.google-services'
 }
 
 android {
@@ -120,10 +120,10 @@ dependencies {
     // Core Android  
     implementation 'androidx.core:core-ktx:1.12.0'
     
-    // Firebase & Push Notifications
-    implementation platform('com.google.firebase:firebase-bom:32.7.0')
-    implementation 'com.google.firebase:firebase-messaging-ktx'
-    implementation 'com.google.firebase:firebase-analytics-ktx'
+    // Firebase & Push Notifications - Temporarily disabled for testing
+    // implementation platform('com.google.firebase:firebase-bom:32.7.0')
+    // implementation 'com.google.firebase:firebase-messaging-ktx'
+    // implementation 'com.google.firebase:firebase-analytics-ktx'
     
     // Google Auth (Credential Manager - Compatible with API 34)
     implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.0'

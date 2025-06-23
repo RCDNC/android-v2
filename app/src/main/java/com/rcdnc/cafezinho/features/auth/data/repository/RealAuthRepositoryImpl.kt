@@ -1,3 +1,9 @@
+/*
+TEMPORARIAMENTE DESABILITADO - Conflitos com interface AuthRepository
+Este arquivo será corrigido quando a interface estiver estabilizada
+*/
+
+/*
 package com.rcdnc.cafezinho.features.auth.data.repository
 
 import android.content.Context
@@ -250,4 +256,4 @@ class RealAuthRepositoryImpl(private val context: Context) : AuthRepository {
     override suspend fun signup(phone: String): Result<String> = registerWithPhone(phone)
     override suspend fun verifyOtp(phone: String, otp: String): Result<User> = signInWithPhone(phone, otp)
     override suspend fun logout(): Result<Unit> = signOut()
-}
+}*/

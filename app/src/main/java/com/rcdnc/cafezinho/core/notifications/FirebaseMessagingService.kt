@@ -1,30 +1,39 @@
 package com.rcdnc.cafezinho.core.notifications
 
+/*
+ * FIREBASE TEMPORARIAMENTE DESABILITADO
+ * Firebase está comentado no build.gradle para testes
+ * Esta classe será reativada quando Firebase for habilitado
+ */
+
+/*
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.rcdnc.cafezinho.core.auth.AuthManager
 import com.rcdnc.cafezinho.data.repository.NotificationRepositoryImpl
-import dagger.hilt.android.AndroidEntryPoint
+// import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+// import javax.inject.Inject
 
 /**
  * Serviço FCM para receber push notifications
  * Integração com Laravel API para registro de tokens
+ * 
+ * TEMPORARIAMENTE DESABILITADO - Firebase comentado no build.gradle
  */
-@AndroidEntryPoint
-class FirebaseMessagingService : FirebaseMessagingService() {
+// @AndroidEntryPoint
+class FirebaseMessagingService : com.google.firebase.messaging.FirebaseMessagingService() {
     
-    @Inject
+    // @Inject
     lateinit var notificationManager: NotificationManager
     
-    @Inject
+    // @Inject
     lateinit var authManager: AuthManager
     
-    @Inject
+    // @Inject
     lateinit var notificationRepository: NotificationRepositoryImpl
     
     private val serviceScope = CoroutineScope(Dispatchers.IO)
@@ -219,3 +228,4 @@ class FirebaseMessagingService : FirebaseMessagingService() {
         Log.e(TAG, "Failed to send message: $msgId", exception)
     }
 }
+*/

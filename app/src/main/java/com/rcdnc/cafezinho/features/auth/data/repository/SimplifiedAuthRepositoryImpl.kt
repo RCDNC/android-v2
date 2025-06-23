@@ -1,3 +1,9 @@
+/*
+TEMPORARIAMENTE DESABILITADO - Conflitos com interface AuthRepository
+Será corrigido quando a interface estiver estabilizada
+*/
+
+/*
 package com.rcdnc.cafezinho.features.auth.data.repository
 
 import com.rcdnc.cafezinho.features.auth.domain.model.User
@@ -251,4 +257,4 @@ class SimplifiedAuthRepositoryImpl @Inject constructor() : AuthRepository {
     override suspend fun logout(): Result<Unit> {
         return signOut()
     }
-}
+}*/

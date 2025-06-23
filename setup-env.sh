@@ -5,7 +5,7 @@
 export ANDROID_HOME=/home/ubuntu/docker/cafezinho/android-v2/android-sdk
 export ANDROID_SDK_ROOT=$ANDROID_HOME
 
-# Set Java path  
+# Set Java path (using Java 17 for Java 21 compatibility)
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 # Add to PATH
