@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "918446856639",
+    "firebase_url": "https://cafezinho-dev-default-rtdb.firebaseio.com",
+    "project_id": "cafezinho-dev",
+    "storage_bucket": "cafezinho-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918446856639:android:3455f80cfab34060afe90a",
+        "android_client_info": {
+          "package_name": "com.rcdnc.cafezinho"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918446856639-d374435nnjqd71ct9pfhoab190bel10a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rcdnc.cafezinho",
+            "certificate_hash": "9aa188697d6912b30b613b794c8d3d6499516211"
+          }
+        },
+        {
+          "client_id": "918446856639-8vcp73vhvkm8tni7smq2i08g4gkit7b4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM-sySzVKVqEXY26Q51TLAOJvozeG7Rr0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "918446856639-8vcp73vhvkm8tni7smq2i08g4gkit7b4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

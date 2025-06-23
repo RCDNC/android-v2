@@ -28,12 +28,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+
 }
 
 dependencies {
@@ -42,5 +44,24 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.navigation.compose.android)
     debugImplementation(libs.compose.ui.tooling)
+
+    // Play Services
+    implementation(libs.play.services.location)
+    implementation(libs.places)
+    implementation(libs.play.services.places)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+    implementation(libs.google.api.client)
+    implementation(libs.play.services.ads)
+    implementation(libs.play.services.gcm)
+    implementation(libs.app.update)
+    implementation(libs.review)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.play.services.auth)
+
+
 }
