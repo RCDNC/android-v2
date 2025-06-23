@@ -36,14 +36,14 @@ val navigationItems = listOf(
     ),
     NavigationItem(
         title = "Matches",
-        selectedIcon = Icons.Filled.Message,
-        unselectedIcon = Icons.Outlined.Message,
+        selectedIcon = Icons.Filled.Email,
+        unselectedIcon = Icons.Outlined.Email,
         route = "matches"
     ),
     NavigationItem(
         title = "Chat",
-        selectedIcon = Icons.Filled.Chat,
-        unselectedIcon = Icons.Outlined.Chat,
+        selectedIcon = Icons.Filled.Email,
+        unselectedIcon = Icons.Outlined.Email,
         route = "chat"
     ),
     NavigationItem(
@@ -186,7 +186,7 @@ private fun MatchesTabContent(paddingValues: PaddingValues) {
             modifier = Modifier.padding(32.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Message,
+                imageVector = Icons.Default.Email,
                 contentDescription = null,
                 modifier = Modifier.size(80.dp),
                 tint = MaterialTheme.colorScheme.secondary
@@ -237,7 +237,7 @@ private fun ChatTabContent(paddingValues: PaddingValues) {
             modifier = Modifier.padding(32.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Chat,
+                imageVector = Icons.Default.Email,
                 contentDescription = null,
                 modifier = Modifier.size(80.dp),
                 tint = MaterialTheme.colorScheme.tertiary
