@@ -1,6 +1,8 @@
 package com.rcdnc.cafezinho.core.auth
 
 import android.content.Context
+import com.rcdnc.cafezinho.features.auth.data.repository.SimpleAuthRepositoryImpl
+import com.rcdnc.cafezinho.features.auth.domain.repository.AuthRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
