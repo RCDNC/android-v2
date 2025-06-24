@@ -67,11 +67,11 @@ fun SwipeScreen(
     var showFiltersDialog by remember { mutableStateOf(false) }
     var showUserDetailsDialog by remember { mutableStateOf<SwipeUser?>(null) }
     
-    // Load users on first composition
-    LaunchedEffect(Unit) {
-        viewModel.handleIntent(SwipeIntent.LoadUsers())
-        viewModel.handleIntent(SwipeIntent.LoadMetrics)
-    }
+    // Commented out - ViewModel already loads in init
+    // LaunchedEffect(Unit) {
+    //     viewModel.handleIntent(SwipeIntent.LoadUsers())
+    //     viewModel.handleIntent(SwipeIntent.LoadMetrics)
+    // }
     
     // Handle state changes
     LaunchedEffect(state) {
