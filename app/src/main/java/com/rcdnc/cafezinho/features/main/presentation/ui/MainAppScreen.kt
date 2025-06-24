@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.rcdnc.cafezinho.features.swipe.presentation.ui.SwipeScreen
 import com.rcdnc.cafezinho.ui.components.CafezinhoButton
 import com.rcdnc.cafezinho.ui.theme.CafezinhoTheme
 
@@ -106,7 +107,11 @@ fun MainAppScreen(
     ) { paddingValues ->
         // Conteúdo baseado na tab selecionada
         when (selectedTab) {
-            0 -> SwipeTabContent(paddingValues)
+            0 -> SwipeScreen(
+                modifier = Modifier.padding(paddingValues),
+                onNavigateToProfile = { /* TODO: Navigate to profile */ },
+                onNavigateToChat = { userId -> /* TODO: Navigate to chat with user */ }
+            )
             1 -> MatchesTabContent(paddingValues)
             2 -> ChatTabContent(paddingValues)
             3 -> ProfileTabContent(paddingValues, onLogout)
@@ -114,63 +119,6 @@ fun MainAppScreen(
     }
 }
 
-@Composable
-private fun SwipeTabContent(paddingValues: PaddingValues) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                        MaterialTheme.colorScheme.background
-                    )
-                )
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(32.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Favorite,
-                contentDescription = null,
-                modifier = Modifier.size(80.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            Text(
-                text = "💖 Descobrir",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Text(
-                text = "Aqui você vai encontrar pessoas incríveis! Deslize para curtir ou passar.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                textAlign = TextAlign.Center
-            )
-            
-            Spacer(modifier = Modifier.height(32.dp))
-            
-            Text(
-                text = "🚧 Em desenvolvimento - Issue #2918",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
 
 @Composable
 private fun MatchesTabContent(paddingValues: PaddingValues) {

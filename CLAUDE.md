@@ -48,7 +48,8 @@ android-v2/
 - **LEITURA**: Issues devem ser lidas sempre no repositório cafezinho principal
 - **COMPILAÇÃO**: android-v2 deve ser independente, SEM referências ao projeto legacy
 - **DEPENDÊNCIAS**: Não copiar módulos legacy (como binderStatic) para android-v2
-- **⚠️ GRADLE**: Não funciona no WSL, apenas no Android Studio Windows - não tentar compilar
+- **⚠️ GRADLE**: NUNCA tentar compilar no WSL/Linux - só funciona no Windows/Android Studio
+- **⚠️ TESTE**: Claude Code funciona no WSL para editar código, mas compilação SEMPRE no Windows
 
 ## 🔧 BUILD VALIDATION & TESTING - 20/06/2025
 
