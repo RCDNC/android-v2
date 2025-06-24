@@ -17,6 +17,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rcdnc.cafezinho.features.swipe.presentation.ui.SwipeScreen
+import com.rcdnc.cafezinho.features.matches.presentation.ui.MatchesScreen
+import com.rcdnc.cafezinho.features.chat.presentation.ui.ChatListScreen
+import com.rcdnc.cafezinho.features.profile.presentation.ui.ProfileScreen
 import com.rcdnc.cafezinho.ui.components.CafezinhoButton
 import com.rcdnc.cafezinho.ui.theme.CafezinhoTheme
 
@@ -109,178 +112,33 @@ fun MainAppScreen(
         when (selectedTab) {
             0 -> SwipeScreen(
                 modifier = Modifier.padding(paddingValues),
-                onNavigateToProfile = { /* TODO: Navigate to profile */ },
-                onNavigateToChat = { userId -> /* TODO: Navigate to chat with user */ }
+                onNavigateToProfile = { selectedTab = 3 },
+                onNavigateToChat = { userId -> selectedTab = 2 }
             )
-            1 -> MatchesTabContent(paddingValues)
-            2 -> ChatTabContent(paddingValues)
-            3 -> ProfileTabContent(paddingValues, onLogout)
-        }
-    }
-}
-
-
-@Composable
-private fun MatchesTabContent(paddingValues: PaddingValues) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
-            .background(MaterialTheme.colorScheme.background),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(32.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Email,
-                contentDescription = null,
-                modifier = Modifier.size(80.dp),
-                tint = MaterialTheme.colorScheme.secondary
+            1 -> MatchesScreen(
+                modifier = Modifier.padding(paddingValues),
+                onMatchClick = { match -> selectedTab = 2 }, // Navigate to chat on match click
+                onMatchDetail = { match -> /* TODO: Navigate to match detail */ },
+                onBackClick = { /* In main screen, no back action needed */ }
             )
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            Text(
-                text = "💕 Matches",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                color = MaterialTheme.colorScheme.onBackground
+            2 -> ChatListScreen(
+                modifier = Modifier.padding(paddingValues),
+                onConversationClick = { conversation -> /* TODO: Navigate to individual chat */ },
+                onBackClick = { /* In main screen, no back action needed */ }
             )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Text(
-                text = "Suas conexões especiais aparecem aqui! Quando alguém curte você de volta, é match!",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                textAlign = TextAlign.Center
-            )
-            
-            Spacer(modifier = Modifier.height(32.dp))
-            
-            Text(
-                text = "🚧 Em desenvolvimento - Issue #2923",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.secondary,
-                textAlign = TextAlign.Center
+            3 -> ProfileScreen(
+                modifier = Modifier.padding(paddingValues),
+                onEditClick = { /* TODO: Navigate to edit profile */ },
+                onSettingsClick = onLogout, // Use logout as settings action for now
+                onBackClick = { /* In main screen, no back action needed */ }
             )
         }
     }
 }
 
-@Composable
-private fun ChatTabContent(paddingValues: PaddingValues) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
-            .background(MaterialTheme.colorScheme.background),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(32.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Email,
-                contentDescription = null,
-                modifier = Modifier.size(80.dp),
-                tint = MaterialTheme.colorScheme.tertiary
-            )
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            Text(
-                text = "💬 Chat",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Text(
-                text = "Converse com seus matches! Mande mensagens, áudios, GIFs e muito mais.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                textAlign = TextAlign.Center
-            )
-            
-            Spacer(modifier = Modifier.height(32.dp))
-            
-            Text(
-                text = "🚧 Em desenvolvimento - Issue #2921",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.tertiary,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
 
-@Composable
-private fun ProfileTabContent(paddingValues: PaddingValues, onLogout: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
-            .background(MaterialTheme.colorScheme.background),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(32.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = null,
-                modifier = Modifier.size(80.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            Text(
-                text = "👤 Perfil",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Text(
-                text = "Gerencie seu perfil, fotos e configurações para se destacar!",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                textAlign = TextAlign.Center
-            )
-            
-            Spacer(modifier = Modifier.height(32.dp))
-            
-            Text(
-                text = "🚧 Em desenvolvimento - Issue #2922",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center
-            )
-            
-            Spacer(modifier = Modifier.height(48.dp))
-            
-            // Logout button
-            CafezinhoButton(
-                text = "Fazer Logout",
-                onClick = onLogout,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-    }
-}
+
+
 
 @Preview(showBackground = true)
 @Composable
