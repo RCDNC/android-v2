@@ -16,6 +16,7 @@ import com.rcdnc.cafezinho.features.swipe.presentation.ui.SwipeScreen
 import com.rcdnc.cafezinho.features.chat.presentation.ui.ChatListScreen
 import com.rcdnc.cafezinho.features.chat.presentation.ui.ChatScreen
 import com.rcdnc.cafezinho.features.matches.presentation.ui.MatchesScreen
+import com.rcdnc.cafezinho.features.matches.presentation.ui.MatchDetailScreen
 import com.rcdnc.cafezinho.features.profile.presentation.ui.ProfileScreen
 import com.rcdnc.cafezinho.features.profile.presentation.ui.EditProfileScreen
 
@@ -235,21 +236,6 @@ fun CafezinhoNavHost(
     }
 }
 
-// Temporary placeholder screens até as features serem integradas
-@Composable
-private fun MatchDetailScreen(
-    userId: String,
-    onBackClick: () -> Unit,
-    onStartChatClick: (Any) -> Unit
-) {
-    // TODO: Implementar quando MatchDetailScreen for criada
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("Match Detail: $userId")
-    }
-}
 
 @Composable
 private fun UserDetailScreen(

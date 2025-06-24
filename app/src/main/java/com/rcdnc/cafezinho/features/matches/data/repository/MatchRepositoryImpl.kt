@@ -20,6 +20,14 @@ class MatchRepositoryImpl @Inject constructor(
 ) : MatchRepository {
     
     override fun getUserMatches(userId: String): Flow<Result<List<Match>>> = flow {
+        // Se for usuário demo, retorna dados mockados
+        if (userId.startsWith("demo-user-") || userId == "1") {
+            val demoMatches = getDemoMatches()
+            android.util.Log.d("MatchRepository", "Returning ${demoMatches.size} demo matches for userId: $userId")
+            emit(Result.success(demoMatches))
+            return@flow
+        }
+        
         try {
             val response = matchApiService.getUserMatches(userId.toInt())
             
@@ -183,4 +191,120 @@ private fun isNewMatch(createdAt: String): Boolean {
     val matchTime = parseTimestamp(createdAt)
     val oneDayAgo = System.currentTimeMillis() - (24 * 60 * 60 * 1000)
     return matchTime > oneDayAgo
+}
+
+/**
+ * Retorna matches demo para usuário de teste
+ */
+private fun getDemoMatches(): List<Match> {
+    return listOf(
+        Match(
+            id = "match-1",
+            userId = "1",
+            otherUserId = "2",
+            otherUserName = "Maria Silva",
+            otherUserAvatar = null,
+            otherUserAge = 28,
+            otherUserDistance = "2 km",
+            isSuperLike = true,
+            isPremiumUser = true,
+            isNewMatch = true,
+            isOnline = true,
+            hasUnreadMessages = true,
+            userMessagesCount = 3,
+            otherUserMessagesCount = 5,
+            matchedAt = System.currentTimeMillis() - 3600000, // 1 hora atrás
+            lastMessageTimestamp = System.currentTimeMillis() - 1800000
+        ),
+        Match(
+            id = "match-2",
+            userId = "1",
+            otherUserId = "3",
+            otherUserName = "João Santos",
+            otherUserAvatar = null,
+            otherUserAge = 32,
+            otherUserDistance = "5 km",
+            isSuperLike = false,
+            isPremiumUser = true,
+            isNewMatch = false,
+            isOnline = false,
+            hasUnreadMessages = false,
+            userMessagesCount = 10,
+            otherUserMessagesCount = 12,
+            matchedAt = System.currentTimeMillis() - 86400000, // 1 dia atrás
+            lastMessageTimestamp = System.currentTimeMillis() - 7200000
+        ),
+        Match(
+            id = "match-3",
+            userId = "1",
+            otherUserId = "4",
+            otherUserName = "Ana Costa",
+            otherUserAvatar = null,
+            otherUserAge = 25,
+            otherUserDistance = "3 km",
+            isSuperLike = true,
+            isPremiumUser = false,
+            isNewMatch = true,
+            isOnline = true,
+            hasUnreadMessages = false,
+            userMessagesCount = 0,
+            otherUserMessagesCount = 0,
+            matchedAt = System.currentTimeMillis() - 7200000, // 2 horas atrás
+            lastMessageTimestamp = null
+        ),
+        Match(
+            id = "match-4",
+            userId = "1",
+            otherUserId = "5",
+            otherUserName = "Pedro Oliveira",
+            otherUserAvatar = null,
+            otherUserAge = 30,
+            otherUserDistance = "8 km",
+            isSuperLike = false,
+            isPremiumUser = false,
+            isNewMatch = false,
+            isOnline = true,
+            hasUnreadMessages = true,
+            userMessagesCount = 1,
+            otherUserMessagesCount = 2,
+            matchedAt = System.currentTimeMillis() - 172800000, // 2 dias atrás
+            lastMessageTimestamp = System.currentTimeMillis() - 3600000
+        ),
+        Match(
+            id = "match-5",
+            userId = "1",
+            otherUserId = "6",
+            otherUserName = "Julia Mendes",
+            otherUserAvatar = null,
+            otherUserAge = 26,
+            otherUserDistance = "1 km",
+            isSuperLike = false,
+            isPremiumUser = true,
+            isNewMatch = false,
+            isOnline = false,
+            hasUnreadMessages = false,
+            userMessagesCount = 15,
+            otherUserMessagesCount = 18,
+            matchedAt = System.currentTimeMillis() - 604800000, // 1 semana atrás
+            lastMessageTimestamp = System.currentTimeMillis() - 86400000
+        ),
+        Match(
+            id = "match-6",
+            userId = "1",
+            otherUserId = "7",
+            otherUserName = "Lucas Ferreira",
+            otherUserAvatar = null,
+            otherUserAge = 29,
+            otherUserDistance = "4 km",
+            isSuperLike = true,
+            isPremiumUser = false,
+            isNewMatch = true,
+            isOnline = true,
+            hasUnreadMessages = true,
+            userMessagesCount = 0,
+            otherUserMessagesCount = 1,
+            matchedAt = System.currentTimeMillis() - 1800000, // 30 minutos atrás
+            lastMessageTimestamp = System.currentTimeMillis() - 900000
+        )
+    )
 }

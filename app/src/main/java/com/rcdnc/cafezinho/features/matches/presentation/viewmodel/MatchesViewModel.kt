@@ -24,7 +24,7 @@ class MatchesViewModel @Inject constructor(
     private val _matches = MutableStateFlow<List<Match>>(emptyList())
     val matches: StateFlow<List<Match>> = _matches.asStateFlow()
     
-    private var currentUserId: String = "me" // TODO: Get from auth service
+    private var currentUserId: String = "1" // Default demo user ID
     
     fun handleIntent(intent: MatchesIntent) {
         when (intent) {
@@ -40,14 +40,19 @@ class MatchesViewModel @Inject constructor(
         val userIdToUse = userId ?: currentUserId
         _state.value = MatchesState.Loading
         
+        // Log para debug
+        android.util.Log.d("MatchesViewModel", "Loading matches for userId: $userIdToUse")
+        
         viewModelScope.launch {
             matchRepository.getUserMatches(userIdToUse)
                 .catch { exception ->
+                    android.util.Log.e("MatchesViewModel", "Error loading matches", exception)
                     _state.value = MatchesState.Error(exception.message ?: "Erro ao carregar matches")
                 }
                 .collect { result ->
                     result.fold(
                         onSuccess = { matchesList ->
+                            android.util.Log.d("MatchesViewModel", "Loaded ${matchesList.size} matches")
                             _matches.value = matchesList
                             _state.value = if (matchesList.isEmpty()) {
                                 MatchesState.Empty
@@ -56,6 +61,7 @@ class MatchesViewModel @Inject constructor(
                             }
                         },
                         onFailure = { exception ->
+                            android.util.Log.e("MatchesViewModel", "Failed to load matches", exception)
                             _state.value = MatchesState.Error(exception.message ?: "Erro ao carregar matches")
                         }
                     )

@@ -54,6 +54,13 @@ fun MatchesScreen(
     val matches by viewModel.matches.collectAsStateWithLifecycle()
     
     val isRefreshing = state is MatchesState.Loading
+    
+    // Force load matches on first composition if idle
+    LaunchedEffect(Unit) {
+        if (state is MatchesState.Idle) {
+            viewModel.handleIntent(MatchesIntent.LoadMatches())
+        }
+    }
     // val swipeRefreshState = rememberSwipeRefreshState(isRefreshing)
     
     // Handle navigation
@@ -132,8 +139,20 @@ fun MatchesScreen(
                 }
                 
                 else -> {
-                    // Idle state - show loading
-                    LoadingState()
+                    // Idle state - show matches if available, otherwise loading
+                    if (matches.isNotEmpty()) {
+                        MatchesGrid(
+                            matches = matches,
+                            onMatchClick = { match ->
+                                viewModel.handleIntent(MatchesIntent.OpenChat(match.otherUserId))
+                            },
+                            onDeleteMatch = { match ->
+                                viewModel.handleIntent(MatchesIntent.DeleteMatch(match.id, match.otherUserId))
+                            }
+                        )
+                    } else {
+                        LoadingState()
+                    }
                 }
             }
         }
