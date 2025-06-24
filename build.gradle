@@ -19,3 +19,9 @@ plugins {
     id 'com.google.gms.google-services' version '4.4.2' apply false
     id 'com.github.ben-manes.versions' version '0.51.0'
 }
+
+// Configuração para mostrar apenas versões estáveis (release)
+dependencyUpdates {
+    // só sugere versões de release (ignora alfas/betas/RCs)
+    revision = "release"
+}
