@@ -13,6 +13,10 @@ import com.rcdnc.cafezinho.ui.theme.CafezinhoAlpha
 val CafezinhoPrimary = Color(CafezinhoColors.PRIMARY)
 val CafezinhoOnPrimary = Color(CafezinhoColors.BACKGROUND_LIGHT)
 
+// Secondary brand colors
+val CafezinhoSecondary = Color(CafezinhoColors.MATCH_PURPLE)
+val CafezinhoOnSecondary = Color(CafezinhoColors.BACKGROUND_LIGHT)
+
 // Background colors
 val CafezinhoBackground = Color(CafezinhoColors.BACKGROUND_LIGHT)
 val CafezinhoBackgroundDark = Color(CafezinhoColors.BACKGROUND_DARK)
