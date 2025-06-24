@@ -29,6 +29,12 @@ class SwipeRepositoryImpl @Inject constructor(
         userId: String,
         filters: SwipeFilters?
     ): Result<List<SwipeUser>> {
+        // Se for usuário demo, retorna dados mockados
+        if (userId == "1" || userId.startsWith("demo-user-")) {
+            android.util.Log.d("SwipeRepository", "Returning demo users for swipe userId: $userId")
+            return Result.success(getDemoSwipeUsers())
+        }
+        
         return try {
             val response = swipeApiService.getNearbyUsers(
                 userId = userId.toInt(),
@@ -81,6 +87,11 @@ class SwipeRepositoryImpl @Inject constructor(
         targetUserId: String,
         action: SwipeAction
     ): Result<SwipeResult> {
+        // Se for usuário demo, retorna resultado simulado
+        if (userId == "1" || userId.startsWith("demo-user-")) {
+            return Result.success(getDemoSwipeResult(action, targetUserId))
+        }
+        
         return try {
             val actionString = when (action) {
                 SwipeAction.LIKE -> "like"
@@ -147,6 +158,23 @@ class SwipeRepositoryImpl @Inject constructor(
     }
     
     override suspend fun getUserMetrics(userId: String): Result<SwipeMetrics> {
+        // Se for usuário demo, retorna métricas demo
+        if (userId == "1" || userId.startsWith("demo-user-")) {
+            val demoMetrics = SwipeMetrics(
+                dailyLikesUsed = 15,
+                dailyLikesLimit = 30,
+                superLikesUsed = 1,
+                superLikesLimit = 3,
+                rewindsUsed = 0,
+                rewindsLimit = 0,
+                isPremium = false,
+                canUseRewind = false,
+                canUseSuperLike = true
+            )
+            _userMetricsCache.value = demoMetrics
+            return Result.success(demoMetrics)
+        }
+        
         return try {
             val response = swipeApiService.getUserConsumables(userId.toInt())
             
@@ -392,4 +420,312 @@ private fun parseTimestamp(timestamp: String?): Long? {
     } catch (e: Exception) {
         null
     }
+}
+
+/**
+ * Retorna usuários demo para o sistema de swipe
+ */
+private fun getDemoSwipeUsers(): List<SwipeUser> {
+    return listOf(
+        SwipeUser(
+            id = "10",
+            firstName = "Sophia",
+            lastName = "Martins",
+            age = 24,
+            bio = "Amo café ☕, livros 📚 e viagens ✈️. Procurando alguém para compartilhar aventuras e conversas profundas.",
+            location = "São Paulo, SP",
+            distance = "1.2 km",
+            photos = listOf(
+                SwipeUserPhoto("1", "https://example.com/sophia1.jpg", 0, true),
+                SwipeUserPhoto("2", "https://example.com/sophia2.jpg", 1, false),
+                SwipeUserPhoto("3", "https://example.com/sophia3.jpg", 2, false)
+            ),
+            interests = listOf("Café", "Literatura", "Viagens", "Fotografia", "Yoga"),
+            jobTitle = "Designer UX/UI",
+            company = "Tech Startup",
+            school = "USP",
+            isVerified = true,
+            isPremium = true,
+            isOnline = true,
+            lastSeen = System.currentTimeMillis(),
+            rating = 4.8,
+            profileCompletion = 95,
+            mutualConnections = 3,
+            mutualInterests = listOf("Café", "Viagens")
+        ),
+        SwipeUser(
+            id = "11",
+            firstName = "Gabriel",
+            lastName = "Santos",
+            age = 28,
+            bio = "Desenvolvedor por profissão, cozinheiro por paixão 👨‍💻🍳 Sempre em busca do café perfeito!",
+            location = "São Paulo, SP",
+            distance = "3.5 km",
+            photos = listOf(
+                SwipeUserPhoto("4", "https://example.com/gabriel1.jpg", 0, true),
+                SwipeUserPhoto("5", "https://example.com/gabriel2.jpg", 1, false)
+            ),
+            interests = listOf("Tecnologia", "Gastronomia", "Café", "Games", "Música"),
+            jobTitle = "Software Engineer",
+            company = "Fintech",
+            school = "Unicamp",
+            isVerified = false,
+            isPremium = false,
+            isOnline = false,
+            lastSeen = System.currentTimeMillis() - 3600000, // 1 hora atrás
+            rating = 4.5,
+            profileCompletion = 80,
+            mutualConnections = 1,
+            mutualInterests = listOf("Café", "Tecnologia")
+        ),
+        SwipeUser(
+            id = "12",
+            firstName = "Isabella",
+            lastName = "Lima",
+            age = 26,
+            bio = "Médica veterinária 🐾 Apaixonada por animais e natureza 🌿 Café é essencial na minha vida!",
+            location = "São Paulo, SP",
+            distance = "2.8 km",
+            photos = listOf(
+                SwipeUserPhoto("6", "https://example.com/isabella1.jpg", 0, true),
+                SwipeUserPhoto("7", "https://example.com/isabella2.jpg", 1, false),
+                SwipeUserPhoto("8", "https://example.com/isabella3.jpg", 2, false),
+                SwipeUserPhoto("9", "https://example.com/isabella4.jpg", 3, false)
+            ),
+            interests = listOf("Animais", "Natureza", "Café", "Trilhas", "Fotografia"),
+            jobTitle = "Veterinária",
+            company = "Clínica Pet Love",
+            school = "UNESP",
+            isVerified = true,
+            isPremium = false,
+            isOnline = true,
+            lastSeen = System.currentTimeMillis(),
+            rating = 4.9,
+            profileCompletion = 100,
+            mutualConnections = 2,
+            mutualInterests = listOf("Café", "Fotografia", "Natureza")
+        ),
+        SwipeUser(
+            id = "13",
+            firstName = "Rafael",
+            lastName = "Oliveira",
+            age = 30,
+            bio = "Advogado, músico nas horas vagas 🎸 Sempre pronto para um bom papo e um café especial",
+            location = "São Paulo, SP",
+            distance = "5.2 km",
+            photos = listOf(
+                SwipeUserPhoto("10", "https://example.com/rafael1.jpg", 0, true),
+                SwipeUserPhoto("11", "https://example.com/rafael2.jpg", 1, false),
+                SwipeUserPhoto("12", "https://example.com/rafael3.jpg", 2, false)
+            ),
+            interests = listOf("Música", "Direito", "Café", "Cinema", "Literatura"),
+            jobTitle = "Advogado",
+            company = "Oliveira & Associados",
+            school = "PUC-SP",
+            isVerified = true,
+            isPremium = true,
+            isOnline = false,
+            lastSeen = System.currentTimeMillis() - 7200000, // 2 horas atrás
+            rating = 4.7,
+            profileCompletion = 90,
+            mutualConnections = 0,
+            mutualInterests = listOf("Café", "Cinema")
+        ),
+        SwipeUser(
+            id = "14",
+            firstName = "Camila",
+            lastName = "Ferreira",
+            age = 23,
+            bio = "Estudante de psicologia 🧠 Amo arte, música e conversas que fazem pensar ✨",
+            location = "São Paulo, SP",
+            distance = "1.8 km",
+            photos = listOf(
+                SwipeUserPhoto("13", "https://example.com/camila1.jpg", 0, true),
+                SwipeUserPhoto("14", "https://example.com/camila2.jpg", 1, false)
+            ),
+            interests = listOf("Psicologia", "Arte", "Música", "Café", "Meditação"),
+            jobTitle = "Estudante",
+            company = null,
+            school = "PUC-SP",
+            isVerified = false,
+            isPremium = false,
+            isOnline = true,
+            lastSeen = System.currentTimeMillis(),
+            rating = 4.6,
+            profileCompletion = 75,
+            mutualConnections = 1,
+            mutualInterests = listOf("Café", "Arte")
+        ),
+        SwipeUser(
+            id = "15",
+            firstName = "Bruno",
+            lastName = "Costa",
+            age = 32,
+            bio = "Empreendedor, fitness enthusiast 💪 Café antes do treino é sagrado! Busco alguém para compartilhar momentos especiais",
+            location = "São Paulo, SP",
+            distance = "4.0 km",
+            photos = listOf(
+                SwipeUserPhoto("15", "https://example.com/bruno1.jpg", 0, true),
+                SwipeUserPhoto("16", "https://example.com/bruno2.jpg", 1, false),
+                SwipeUserPhoto("17", "https://example.com/bruno3.jpg", 2, false)
+            ),
+            interests = listOf("Fitness", "Empreendedorismo", "Café", "Viagens", "Investimentos"),
+            jobTitle = "CEO",
+            company = "Costa Ventures",
+            school = "FGV",
+            isVerified = true,
+            isPremium = true,
+            isOnline = false,
+            lastSeen = System.currentTimeMillis() - 1800000, // 30 minutos atrás
+            rating = 4.7,
+            profileCompletion = 100,
+            mutualConnections = 2,
+            mutualInterests = listOf("Café", "Viagens", "Empreendedorismo")
+        ),
+        SwipeUser(
+            id = "16",
+            firstName = "Larissa",
+            lastName = "Almeida",
+            age = 27,
+            bio = "Professora de inglês 📚 Apaixonada por culturas e idiomas 🌍 Coffee lover ☕",
+            location = "São Paulo, SP",
+            distance = "2.5 km",
+            photos = listOf(
+                SwipeUserPhoto("18", "https://example.com/larissa1.jpg", 0, true),
+                SwipeUserPhoto("19", "https://example.com/larissa2.jpg", 1, false),
+                SwipeUserPhoto("20", "https://example.com/larissa3.jpg", 2, false),
+                SwipeUserPhoto("21", "https://example.com/larissa4.jpg", 3, false)
+            ),
+            interests = listOf("Idiomas", "Viagens", "Café", "Literatura", "Culinária"),
+            jobTitle = "English Teacher",
+            company = "Language School",
+            school = "Letras - USP",
+            isVerified = false,
+            isPremium = false,
+            isOnline = true,
+            lastSeen = System.currentTimeMillis(),
+            rating = 4.8,
+            profileCompletion = 85,
+            mutualConnections = 1,
+            mutualInterests = listOf("Café", "Literatura", "Viagens")
+        ),
+        SwipeUser(
+            id = "17",
+            firstName = "Thiago",
+            lastName = "Mendes",
+            age = 29,
+            bio = "Arquiteto apaixonado por design e café ☕ Sempre explorando novos cafés pela cidade",
+            location = "São Paulo, SP",
+            distance = "3.2 km",
+            photos = listOf(
+                SwipeUserPhoto("22", "https://example.com/thiago1.jpg", 0, true),
+                SwipeUserPhoto("23", "https://example.com/thiago2.jpg", 1, false)
+            ),
+            interests = listOf("Arquitetura", "Design", "Café", "Arte", "Fotografia"),
+            jobTitle = "Arquiteto",
+            company = "Studio Design",
+            school = "FAU-USP",
+            isVerified = true,
+            isPremium = false,
+            isOnline = false,
+            lastSeen = System.currentTimeMillis() - 10800000, // 3 horas atrás
+            rating = 4.6,
+            profileCompletion = 88,
+            mutualConnections = 0,
+            mutualInterests = listOf("Café", "Arte", "Design")
+        ),
+        SwipeUser(
+            id = "18",
+            firstName = "Amanda",
+            lastName = "Rodrigues",
+            age = 25,
+            bio = "Nutricionista e food lover 🥗 Café é minha paixão (com moderação!) 😄",
+            location = "São Paulo, SP",
+            distance = "1.5 km",
+            photos = listOf(
+                SwipeUserPhoto("24", "https://example.com/amanda1.jpg", 0, true),
+                SwipeUserPhoto("25", "https://example.com/amanda2.jpg", 1, false),
+                SwipeUserPhoto("26", "https://example.com/amanda3.jpg", 2, false)
+            ),
+            interests = listOf("Nutrição", "Gastronomia", "Café", "Yoga", "Bem-estar"),
+            jobTitle = "Nutricionista",
+            company = "Clínica Saúde & Vida",
+            school = "FSP-USP",
+            isVerified = true,
+            isPremium = true,
+            isOnline = true,
+            lastSeen = System.currentTimeMillis(),
+            rating = 4.9,
+            profileCompletion = 98,
+            mutualConnections = 2,
+            mutualInterests = listOf("Café", "Gastronomia", "Yoga")
+        ),
+        SwipeUser(
+            id = "19",
+            firstName = "Lucas",
+            lastName = "Pereira",
+            age = 31,
+            bio = "Jornalista e escritor 📝 Sempre com um café na mão e uma história para contar",
+            location = "São Paulo, SP",
+            distance = "4.5 km",
+            photos = listOf(
+                SwipeUserPhoto("27", "https://example.com/lucas1.jpg", 0, true),
+                SwipeUserPhoto("28", "https://example.com/lucas2.jpg", 1, false),
+                SwipeUserPhoto("29", "https://example.com/lucas3.jpg", 2, false)
+            ),
+            interests = listOf("Jornalismo", "Literatura", "Café", "Cinema", "Política"),
+            jobTitle = "Jornalista",
+            company = "Revista Digital",
+            school = "ECA-USP",
+            isVerified = false,
+            isPremium = false,
+            isOnline = false,
+            lastSeen = System.currentTimeMillis() - 14400000, // 4 horas atrás
+            rating = 4.5,
+            profileCompletion = 82,
+            mutualConnections = 1,
+            mutualInterests = listOf("Café", "Literatura", "Cinema")
+        )
+    )
+}
+
+/**
+ * Retorna resultado demo para ação de swipe
+ */
+private fun getDemoSwipeResult(action: SwipeAction, targetUserId: String): SwipeResult {
+    // Simula matches com alguns usuários específicos
+    val isMatch = when {
+        action == SwipeAction.DISLIKE -> false
+        action == SwipeAction.SUPER_LIKE -> true // Super like sempre dá match em demo
+        action == SwipeAction.LIKE && targetUserId in listOf("10", "12", "14", "16", "18") -> true
+        else -> false
+    }
+    
+    val matchData = if (isMatch) {
+        MatchData(
+            matchId = "match-demo-${System.currentTimeMillis()}",
+            timestamp = System.currentTimeMillis(),
+            message = when (targetUserId) {
+                "10" -> "Vocês têm Café e Viagens em comum!"
+                "12" -> "Vocês adoram Café e Fotografia!"
+                "14" -> "Arte e Café conectam vocês!"
+                "16" -> "Literatura e Viagens em comum!"
+                "18" -> "Yoga e Gastronomia unem vocês!"
+                else -> "É um match! Iniciem uma conversa!"
+            }
+        )
+    } else null
+    
+    // Encontra o usuário da lista demo
+    val user = getDemoSwipeUsers().find { it.id == targetUserId } 
+        ?: SwipeUser(id = targetUserId, firstName = "Usuário", age = 25)
+    
+    android.util.Log.d("SwipeRepository", "Demo swipe action: $action on user $targetUserId - Match: $isMatch")
+    
+    return SwipeResult(
+        action = action,
+        user = user,
+        isMatch = isMatch,
+        matchData = matchData
+    )
 }

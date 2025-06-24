@@ -34,7 +34,7 @@ class SwipeViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
     
-    private var currentUserId: String = "me" // TODO: Get from auth service
+    private var currentUserId: String = "1" // Default demo user ID
     
     fun handleIntent(intent: SwipeIntent) {
         when (intent) {
@@ -53,26 +53,33 @@ class SwipeViewModel @Inject constructor(
     private fun loadUsers(refresh: Boolean = false) {
         if (_isLoading.value) return
         
+        android.util.Log.d("SwipeViewModel", "Loading users for userId: $currentUserId")
+        
         _isLoading.value = true
         _state.value = SwipeState.Loading
         
         viewModelScope.launch {
-            // Primeiro carrega usuários top/prioritários
-            swipeRepository.getTopUsers(currentUserId)
-                .fold(
-                    onSuccess = { topUsers ->
-                        if (topUsers.isNotEmpty()) {
-                            _swipeStack.value = topUsers.take(5) // Limita a 5 usuários top
-                            loadNearbyUsers(refresh, append = true)
-                        } else {
+            // Para usuários demo, pula getTopUsers e vai direto para getNearbyUsers
+            if (currentUserId == "1" || currentUserId.startsWith("demo-user-")) {
+                loadNearbyUsers(refresh, append = false)
+            } else {
+                // Primeiro carrega usuários top/prioritários
+                swipeRepository.getTopUsers(currentUserId)
+                    .fold(
+                        onSuccess = { topUsers ->
+                            if (topUsers.isNotEmpty()) {
+                                _swipeStack.value = topUsers.take(5) // Limita a 5 usuários top
+                                loadNearbyUsers(refresh, append = true)
+                            } else {
+                                loadNearbyUsers(refresh, append = false)
+                            }
+                        },
+                        onFailure = {
+                            // Se falhar, carrega apenas usuários próximos
                             loadNearbyUsers(refresh, append = false)
                         }
-                    },
-                    onFailure = {
-                        // Se falhar, carrega apenas usuários próximos
-                        loadNearbyUsers(refresh, append = false)
-                    }
-                )
+                    )
+            }
         }
     }
     
@@ -81,6 +88,8 @@ class SwipeViewModel @Inject constructor(
             swipeRepository.getNearbyUsers(currentUserId, _filters.value)
                 .fold(
                     onSuccess = { users ->
+                        android.util.Log.d("SwipeViewModel", "Loaded ${users.size} nearby users")
+                        
                         val filteredUsers = users.filter { user ->
                             // Remove usuários que já estão na stack
                             !_swipeStack.value.any { it.id == user.id }

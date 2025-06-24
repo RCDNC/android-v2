@@ -34,7 +34,7 @@ class ProfileViewModel @Inject constructor(
     private val _profileStats = MutableStateFlow<ProfileStats?>(null)
     val profileStats: StateFlow<ProfileStats?> = _profileStats.asStateFlow()
     
-    private var currentUserId: String = "me" // TODO: Get from auth service
+    private var currentUserId: String = "1" // Default demo user ID
     
     fun handleIntent(intent: ProfileIntent) {
         when (intent) {

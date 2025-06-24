@@ -30,6 +30,14 @@ class ProfileRepositoryImpl @Inject constructor(
     private val _profileCache = MutableStateFlow<ProfileData?>(null)
     
     override suspend fun getProfile(userId: String): Result<ProfileData> {
+        // Se for usuário demo, retorna dados mockados
+        if (userId == "1" || userId.startsWith("demo-user-")) {
+            val demoProfile = getDemoProfile()
+            _profileCache.value = demoProfile
+            android.util.Log.d("ProfileRepository", "Returning demo profile for userId: $userId")
+            return Result.success(demoProfile)
+        }
+        
         return try {
             val response = profileApiService.getUserProfile(userId.toInt())
             
@@ -163,31 +171,8 @@ class ProfileRepositoryImpl @Inject constructor(
     }
     
     override suspend fun getAvailableInterests(): Result<List<Interest>> {
-        return try {
-            val response = profileApiService.getAvailableInterests()
-            
-            if (response.isSuccessful) {
-                val interestsResponse = response.body()
-                
-                if (interestsResponse?.success == true) {
-                    val interests = interestsResponse.data.map { interestDto ->
-                        Interest(
-                            id = interestDto.id,
-                            name = interestDto.name,
-                            category = interestDto.category,
-                            isSelected = interestDto.isSelected
-                        )
-                    }
-                    Result.success(interests)
-                } else {
-                    Result.failure(Exception(interestsResponse?.message ?: "Erro ao carregar interesses"))
-                }
-            } else {
-                Result.failure(Exception("Erro na API: ${response.message()}"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        // Sempre retorna interesses demo para simplificar
+        return Result.success(getDemoInterests())
     }
     
     override suspend fun updateUserInterests(
@@ -213,6 +198,11 @@ class ProfileRepositoryImpl @Inject constructor(
     }
     
     override suspend fun getProfileStats(userId: String): Result<ProfileStats> {
+        // Se for usuário demo, retorna estatísticas demo
+        if (userId == "1" || userId.startsWith("demo-user-")) {
+            return Result.success(getDemoProfileStats())
+        }
+        
         return try {
             val response = profileApiService.getProfileStats(userId.toInt())
             
@@ -346,4 +336,146 @@ private fun parseTimestamp(timestamp: String?): Long? {
     } catch (e: Exception) {
         null
     }
+}
+
+/**
+ * Retorna perfil demo para usuário de teste
+ */
+private fun getDemoProfile(): ProfileData {
+    return ProfileData(
+        id = "1",
+        firstName = "João",
+        lastName = "Demo",
+        age = 28,
+        bio = "Desenvolvedor apaixonado por café ☕ e tecnologia 💻\n\nProcurando alguém para compartilhar momentos especiais e um bom café!",
+        gender = "Masculino",
+        jobTitle = "Desenvolvedor Mobile",
+        company = "Tech Startup",
+        school = "USP - Ciência da Computação",
+        photos = listOf(
+            ProfilePhoto(
+                id = "photo1",
+                url = "https://example.com/demo1.jpg",
+                orderSequence = 0,
+                score = 95,
+                isMainPhoto = true,
+                uploadedAt = System.currentTimeMillis() - 86400000 // 1 dia atrás
+            ),
+            ProfilePhoto(
+                id = "photo2", 
+                url = "https://example.com/demo2.jpg",
+                orderSequence = 1,
+                score = 88,
+                isMainPhoto = false,
+                uploadedAt = System.currentTimeMillis() - 172800000 // 2 dias atrás
+            ),
+            ProfilePhoto(
+                id = "photo3",
+                url = "https://example.com/demo3.jpg", 
+                orderSequence = 2,
+                score = 82,
+                isMainPhoto = false,
+                uploadedAt = System.currentTimeMillis() - 259200000 // 3 dias atrás
+            )
+        ),
+        interests = listOf(
+            Interest("1", "Café", "Bebidas", true),
+            Interest("2", "Tecnologia", "Hobbies", true),
+            Interest("3", "Games", "Entretenimento", true),
+            Interest("4", "Viagens", "Lifestyle", true),
+            Interest("5", "Música", "Arte", true),
+            Interest("6", "Fotografia", "Arte", true)
+        ),
+        location = "São Paulo, SP",
+        distance = "0 km",
+        isVerified = true,
+        isPremium = false,
+        isOnline = true,
+        lastSeen = System.currentTimeMillis(),
+        profileCompletion = 85,
+        sexualOrientation = "Heterossexual",
+        lookingFor = "Relacionamento sério",
+        showAge = true,
+        showDistance = true,
+        showOnlineStatus = true
+    )
+}
+
+/**
+ * Retorna lista de interesses disponíveis
+ */
+private fun getDemoInterests(): List<Interest> {
+    return listOf(
+        // Bebidas
+        Interest("1", "Café", "Bebidas", false),
+        Interest("2", "Chá", "Bebidas", false),
+        Interest("3", "Vinho", "Bebidas", false),
+        Interest("4", "Cerveja Artesanal", "Bebidas", false),
+        Interest("5", "Drinks", "Bebidas", false),
+        
+        // Hobbies
+        Interest("6", "Tecnologia", "Hobbies", false),
+        Interest("7", "Leitura", "Hobbies", false),
+        Interest("8", "Cozinhar", "Hobbies", false),
+        Interest("9", "Jardinagem", "Hobbies", false),
+        Interest("10", "DIY", "Hobbies", false),
+        
+        // Entretenimento
+        Interest("11", "Games", "Entretenimento", false),
+        Interest("12", "Cinema", "Entretenimento", false),
+        Interest("13", "Séries", "Entretenimento", false),
+        Interest("14", "Stand-up", "Entretenimento", false),
+        Interest("15", "Teatro", "Entretenimento", false),
+        
+        // Lifestyle
+        Interest("16", "Viagens", "Lifestyle", false),
+        Interest("17", "Fitness", "Lifestyle", false),
+        Interest("18", "Yoga", "Lifestyle", false),
+        Interest("19", "Meditação", "Lifestyle", false),
+        Interest("20", "Vida Saudável", "Lifestyle", false),
+        
+        // Arte
+        Interest("21", "Música", "Arte", false),
+        Interest("22", "Fotografia", "Arte", false),
+        Interest("23", "Pintura", "Arte", false),
+        Interest("24", "Dança", "Arte", false),
+        Interest("25", "Poesia", "Arte", false),
+        
+        // Esportes
+        Interest("26", "Futebol", "Esportes", false),
+        Interest("27", "Corrida", "Esportes", false),
+        Interest("28", "Natação", "Esportes", false),
+        Interest("29", "Ciclismo", "Esportes", false),
+        Interest("30", "Trilhas", "Esportes", false),
+        
+        // Animais
+        Interest("31", "Cachorros", "Animais", false),
+        Interest("32", "Gatos", "Animais", false),
+        Interest("33", "Pássaros", "Animais", false),
+        Interest("34", "Aquarismo", "Animais", false),
+        Interest("35", "Vida Selvagem", "Animais", false),
+        
+        // Cultura
+        Interest("36", "Idiomas", "Cultura", false),
+        Interest("37", "História", "Cultura", false),
+        Interest("38", "Filosofia", "Cultura", false),
+        Interest("39", "Política", "Cultura", false),
+        Interest("40", "Voluntariado", "Cultura", false)
+    )
+}
+
+/**
+ * Retorna estatísticas demo do perfil
+ */
+private fun getDemoProfileStats(): ProfileStats {
+    return ProfileStats(
+        profileCompletion = 85,
+        totalPhotos = 3,
+        totalInterests = 6,
+        profileViews = 342,
+        likes = 127,
+        superLikes = 8,
+        matches = 6,
+        boostRemaining = 0
+    )
 }
