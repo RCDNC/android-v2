@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.*
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.rememberNavController
 import com.rcdnc.cafezinho.core.auth.AuthManager
 import com.rcdnc.cafezinho.core.preferences.PreferencesManager
 import com.rcdnc.cafezinho.features.auth.presentation.ui.LoginScreen
@@ -147,7 +148,9 @@ class MainActivity : ComponentActivity() {
             }
             
             AppScreen.MAIN -> {
+                val navController = rememberNavController()
                 MainAppScreen(
+                    navController = navController,
                     onLogout = {
                         scope.launch {
                             authManager.clearAuthData()

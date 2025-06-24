@@ -16,10 +16,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.rcdnc.cafezinho.features.swipe.presentation.ui.SwipeScreen
-import com.rcdnc.cafezinho.features.matches.presentation.ui.MatchesScreen
-import com.rcdnc.cafezinho.features.chat.presentation.ui.ChatListScreen
-import com.rcdnc.cafezinho.features.profile.presentation.ui.ProfileScreen
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.rcdnc.cafezinho.navigation.CafezinhoNavHost
+import com.rcdnc.cafezinho.navigation.CafezinhoNavigation
 import com.rcdnc.cafezinho.ui.components.CafezinhoButton
 import com.rcdnc.cafezinho.ui.theme.CafezinhoTheme
 
@@ -36,38 +37,51 @@ val navigationItems = listOf(
         title = "Descobrir",
         selectedIcon = Icons.Filled.Favorite,
         unselectedIcon = Icons.Outlined.FavoriteBorder,
-        route = "swipe"
+        route = CafezinhoNavigation.SWIPE
     ),
     NavigationItem(
         title = "Matches",
         selectedIcon = Icons.Filled.Email,
         unselectedIcon = Icons.Outlined.Email,
-        route = "matches"
+        route = CafezinhoNavigation.MATCHES
     ),
     NavigationItem(
         title = "Chat",
         selectedIcon = Icons.Filled.Email,
         unselectedIcon = Icons.Outlined.Email,
-        route = "chat"
+        route = CafezinhoNavigation.CHAT_LIST
     ),
     NavigationItem(
         title = "Perfil",
         selectedIcon = Icons.Filled.Person,
         unselectedIcon = Icons.Outlined.Person,
-        route = "profile"
+        route = CafezinhoNavigation.PROFILE
     )
 )
 
 /**
- * Main App Screen - Com Bottom Navigation
- * Mostra a estrutura principal do app
+ * Main App Screen - Com Bottom Navigation + Navigation Component
+ * Integra bottom navigation com NavHost para navegação completa
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainAppScreen(
-    onLogout: () -> Unit = {}
+    onLogout: () -> Unit = {},
+    navController: NavHostController = rememberNavController()
 ) {
     var selectedTab by remember { mutableIntStateOf(0) }
+    
+    // Observar mudanças de navegação para sincronizar tabs
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
+    
+    // Atualizar tab selecionada baseado na rota atual
+    LaunchedEffect(currentRoute) {
+        val tabIndex = navigationItems.indexOfFirst { it.route == currentRoute }
+        if (tabIndex != -1 && tabIndex != selectedTab) {
+            selectedTab = tabIndex
+        }
+    }
     
     Scaffold(
         topBar = {
@@ -102,37 +116,28 @@ fun MainAppScreen(
                         },
                         label = { Text(item.title) },
                         selected = selectedTab == index,
-                        onClick = { selectedTab = index }
+                        onClick = { 
+                            selectedTab = index
+                            navController.navigate(item.route) {
+                                // Evitar múltiplas cópias da mesma tela
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
                     )
                 }
             }
         }
     ) { paddingValues ->
-        // Conteúdo baseado na tab selecionada
-        when (selectedTab) {
-            0 -> SwipeScreen(
-                modifier = Modifier.padding(paddingValues),
-                onNavigateToProfile = { selectedTab = 3 },
-                onNavigateToChat = { userId -> selectedTab = 2 }
-            )
-            1 -> MatchesScreen(
-                modifier = Modifier.padding(paddingValues),
-                onMatchClick = { match -> selectedTab = 2 }, // Navigate to chat on match click
-                onMatchDetail = { match -> /* TODO: Navigate to match detail */ },
-                onBackClick = { /* In main screen, no back action needed */ }
-            )
-            2 -> ChatListScreen(
-                modifier = Modifier.padding(paddingValues),
-                onConversationClick = { conversation -> /* TODO: Navigate to individual chat */ },
-                onBackClick = { /* In main screen, no back action needed */ }
-            )
-            3 -> ProfileScreen(
-                modifier = Modifier.padding(paddingValues),
-                onEditClick = { /* TODO: Navigate to edit profile */ },
-                onSettingsClick = onLogout, // Use logout as settings action for now
-                onBackClick = { /* In main screen, no back action needed */ }
-            )
-        }
+        // NavHost integrado com bottom navigation
+        CafezinhoNavHost(
+            navController = navController,
+            modifier = Modifier.padding(paddingValues),
+            startDestination = navigationItems[selectedTab].route
+        )
     }
 }
 

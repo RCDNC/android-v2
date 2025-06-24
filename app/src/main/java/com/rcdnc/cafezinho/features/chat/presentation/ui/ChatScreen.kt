@@ -29,6 +29,16 @@ import com.rcdnc.cafezinho.ui.theme.*
 import kotlinx.coroutines.launch
 
 /**
+ * Dados demo para conversa individual
+ */
+private data class ChatData(
+    val userName: String,
+    val userAvatar: String?,
+    val isOnline: Boolean,
+    val messages: List<Message>
+)
+
+/**
  * Tela de conversa individual
  * Migração de activity_chat.xml + ChatActivity.kt
  */
@@ -40,12 +50,105 @@ fun ChatScreen(
     onUserProfileClick: (Any) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    // TODO: Usar ChatViewModel para carregar dados do userId
-    val otherUserName = "Usuário $userId"
-    val otherUserAvatar: String? = null
-    val isOnline = false
-    val messages = remember { emptyList<Message>() }
-    val currentUserId = "me"
+    // Dados demo baseados no userId
+    val chatData = remember(userId) {
+        when (userId) {
+            "2" -> {
+                val messages = listOf(
+                    Message(
+                        id = "1",
+                        senderId = "2",
+                        receiverId = "1",
+                        content = "Oi! Como você está?",
+                        timestamp = System.currentTimeMillis() - 7200000,
+                        type = MessageType.TEXT,
+                        status = MessageStatus.DELIVERED
+                    ),
+                    Message(
+                        id = "2",
+                        senderId = "1",
+                        receiverId = "2",
+                        content = "Oi Maria! Estou bem, obrigado! E você?",
+                        timestamp = System.currentTimeMillis() - 7000000,
+                        type = MessageType.TEXT,
+                        status = MessageStatus.READ
+                    ),
+                    Message(
+                        id = "3",
+                        senderId = "2",
+                        receiverId = "1",
+                        content = "Também estou bem! Que bom que a gente deu match 😊",
+                        timestamp = System.currentTimeMillis() - 3600000,
+                        type = MessageType.TEXT,
+                        status = MessageStatus.DELIVERED
+                    )
+                )
+                ChatData("Maria Silva", null, true, messages)
+            }
+            "3" -> {
+                val messages = listOf(
+                    Message(
+                        id = "4",
+                        senderId = "1",
+                        receiverId = "3",
+                        content = "Adorei te conhecer! 😊",
+                        timestamp = System.currentTimeMillis() - 7200000,
+                        type = MessageType.TEXT,
+                        status = MessageStatus.READ
+                    ),
+                    Message(
+                        id = "5",
+                        senderId = "3",
+                        receiverId = "1",
+                        content = "Eu também! Você parece ser uma pessoa muito interessante!",
+                        timestamp = System.currentTimeMillis() - 6900000,
+                        type = MessageType.TEXT,
+                        status = MessageStatus.READ
+                    ),
+                    Message(
+                        id = "6",
+                        senderId = "1",
+                        receiverId = "3",
+                        content = "Obrigado! Que tal a gente se conhecer melhor?",
+                        timestamp = System.currentTimeMillis() - 6800000,
+                        type = MessageType.TEXT,
+                        status = MessageStatus.READ
+                    )
+                )
+                ChatData("João Santos", null, false, messages)
+            }
+            "4" -> {
+                val messages = listOf(
+                    Message(
+                        id = "7",
+                        senderId = "4",
+                        receiverId = "1",
+                        content = "Que coincidência nos encontrarmos aqui!",
+                        timestamp = System.currentTimeMillis() - 86400000,
+                        type = MessageType.TEXT,
+                        status = MessageStatus.SENT
+                    ),
+                    Message(
+                        id = "8",
+                        senderId = "1",
+                        receiverId = "4",
+                        content = "Verdade! O mundo é pequeno mesmo 😄",
+                        timestamp = System.currentTimeMillis() - 86300000,
+                        type = MessageType.TEXT,
+                        status = MessageStatus.DELIVERED
+                    )
+                )
+                ChatData("Ana Costa", null, true, messages)
+            }
+            else -> ChatData("Usuário $userId", null, false, emptyList())
+        }
+    }
+    
+    val otherUserName = chatData.userName
+    val otherUserAvatar = chatData.userAvatar
+    val isOnline = chatData.isOnline
+    val messages = chatData.messages
+    val currentUserId = "1"
     val isTyping = false
     
     val onMenuClick = { onUserProfileClick(userId) }
