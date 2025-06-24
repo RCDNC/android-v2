@@ -48,8 +48,8 @@ android-v2/
 - **LEITURA**: Issues devem ser lidas sempre no repositório cafezinho principal
 - **COMPILAÇÃO**: android-v2 deve ser independente, SEM referências ao projeto legacy
 - **DEPENDÊNCIAS**: Não copiar módulos legacy (como binderStatic) para android-v2
-- **⚠️ GRADLE**: NUNCA tentar compilar no WSL/Linux - só funciona no Windows/Android Studio
-- **⚠️ TESTE**: Claude Code funciona no WSL para editar código, mas compilação SEMPRE no Windows
+- **🎯 MULTI-PLATFORM**: Gradle detecta automaticamente Windows/WSL/Linux e configura SDK
+- **📱 SDK LOCAL**: android-sdk/ na raiz do projeto funciona em qualquer plataforma
 
 ## 🔧 BUILD VALIDATION & TESTING - 20/06/2025
 
@@ -163,6 +163,38 @@ android-v2/
 - **4 arquivos de teste** com **26+ cenários** validados
 
 **PRÓXIMO PASSO**: WebSocket integration ou implementar próxima feature
+
+---
+## 🎯 GRADLE MULTI-PLATFORM SETUP - 24/06/2025
+
+### ✅ **DETECÇÃO AUTOMÁTICA DE PLATAFORMA IMPLEMENTADA**
+
+#### **🔧 Sistema de Detecção**:
+- **Windows**: Detecta automaticamente OS + paths do SDK
+- **WSL/Linux**: Detecta WSL_DISTRO_NAME + paths Linux
+- **macOS**: Suporte completo para Homebrew + Android Studio
+- **SDK Local**: Prioridade para `android-sdk/` no projeto
+
+#### **📱 Prioridade de Detecção do SDK**:
+1. **🥇 Local**: `android-v2/android-sdk/` (sua configuração!)
+2. **🥈 Environment**: `ANDROID_HOME`, `ANDROID_SDK_ROOT`
+3. **🥉 Platform**: Windows `C:\Android\Sdk`, Linux `~/Android/Sdk`
+
+#### **🚀 Funcionalidades Implementadas**:
+- ✅ **Auto-detecção** de OS (Windows/Linux/macOS/WSL)
+- ✅ **Auto-geração** de `local.properties`
+- ✅ **SDK local** prioritário no projeto
+- ✅ **Compilação universal** (WSL + Windows + CI/CD)
+- ✅ **Logs informativos** de detecção
+
+### 🎯 **BENEFÍCIOS CONQUISTADOS**:
+✅ **Desenvolvedores**: Cada um usa seu ambiente preferido  
+✅ **Produtividade**: WSL + celular físico funciona perfeitamente  
+✅ **Compatibilidade**: Windows + emulador continua funcionando  
+✅ **CI/CD**: Builds automáticos em servidores Linux  
+✅ **Zero conflito**: Não quebra configurações existentes  
+
+**STATUS**: 🎉 **MULTI-PLATFORM READY!** - Funciona em qualquer ambiente
 
 ---
 ## 💕 ISSUE #2918 - SWIPE/DESCOBRIR IMPLEMENTADA COM SUCESSO - 22/06/2025

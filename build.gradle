@@ -6,6 +6,14 @@ buildscript {
         navigation_compose_version = '2.8.5'
         compose_version = '1.7.6'
         material3_version = '1.3.1'
+        
+        // 🎯 MULTI-PLATFORM DETECTION
+        def osName = System.getProperty("os.name").toLowerCase()
+        isWindows = osName.contains("windows")
+        isLinux = osName.contains("linux") 
+        isWsl = System.getenv("WSL_DISTRO_NAME") != null
+        
+        println "🔧 Platform: ${osName} (Windows: ${isWindows}, Linux: ${isLinux}, WSL: ${isWsl})"
     }
 }
 
@@ -24,4 +32,40 @@ plugins {
 dependencyUpdates {
     // só sugere versões de release (ignora alfas/betas/RCs)
     revision = "release"
+}
+
+// 🎯 MULTI-PLATFORM TASK
+task detectPlatform {
+    doLast {
+        def osName = System.getProperty("os.name").toLowerCase()
+        def isWindows = osName.contains("windows")
+        def isLinux = osName.contains("linux") 
+        def isWsl = System.getenv("WSL_DISTRO_NAME") != null
+        
+        println "🔧 Platform detected: ${osName}"
+        println "📍 Windows: ${isWindows}"
+        println "📍 Linux: ${isLinux}" 
+        println "📍 WSL: ${isWsl}"
+        
+        // Check local SDK
+        def localSdk = "${projectDir}/android-sdk"
+        if (new File(localSdk).exists()) {
+            println "✅ Local Android SDK found: ${localSdk}"
+        } else {
+            println "❌ Local Android SDK not found: ${localSdk}"
+        }
+        
+        // Check local.properties
+        def localProps = file('local.properties')
+        if (localProps.exists()) {
+            println "✅ local.properties exists"
+            localProps.eachLine { line ->
+                if (line.startsWith('sdk.dir=')) {
+                    println "📱 SDK path: ${line.substring(8)}"
+                }
+            }
+        } else {
+            println "❌ local.properties not found"
+        }
+    }
 }
