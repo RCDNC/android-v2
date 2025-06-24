@@ -15,12 +15,12 @@ fi
 
 echo "📂 Checking Windows target directory..."
 if [ ! -d "$WINDOWS_TARGET" ]; then
-    echo "📁 Creating Windows directory..."
+    echo "📁 Creating Android V2 directory..."
     mkdir -p "$WINDOWS_TARGET"
 fi
 
 echo "📱 Copying APK to Windows..."
-cp "$WSL_APK_PATH" "$WINDOWS_TARGET"
+cp "$WSL_APK_PATH" "$WINDOWS_TARGET/app-debug.apk"
 
 if [ $? -eq 0 ]; then
     echo "✅ APK copied successfully!"
@@ -47,40 +47,23 @@ echo 🔍 Checking connected devices...
 adb devices
 
 echo.
-echo 🚀 Installing APK (with signature handling)...
+echo 🚀 Installing APK (with auto-uninstall)...
 
-REM Try normal install first
+REM Always uninstall first to avoid signature conflicts
+echo 🗑️  Uninstalling previous version...
+adb uninstall com.rcdnc.cafezinho.debug
+
+echo 📱 Installing fresh APK...
 adb install app-debug.apk
 
 if %errorlevel% == 0 (
     echo.
     echo ✅ Installation successful!
     goto START_APP
-)
-
-echo.
-echo ⚠️  Normal install failed, trying to reinstall...
-adb install -r app-debug.apk
-
-if %errorlevel% == 0 (
-    echo.
-    echo ✅ Reinstallation successful!
-    goto START_APP
-)
-
-echo.
-echo ⚠️  Reinstall failed, uninstalling old version first...
-adb uninstall com.rcdnc.cafezinho.debug
-adb install app-debug.apk
-
-if %errorlevel% == 0 (
-    echo.
-    echo ✅ Fresh installation successful!
-    goto START_APP
 ) else (
     echo.
-    echo ❌ All installation methods failed!
-    echo 💡 Check device connection and USB debugging
+    echo ❌ Installation failed!
+    echo 💡 Make sure device is connected and USB debugging is enabled
     goto END
 )
 
@@ -93,7 +76,7 @@ echo.
 pause
 EOF
 
-    echo "🎯 Created install-apk.bat for easy Windows installation"
+    echo "🎯 Created install-apk.bat with auto-uninstall for easy Windows installation"
     echo "📁 Just double-click: C:\\cafezinho\\android-v2\\install-apk.bat"
 else
     echo "❌ Copy failed!"
