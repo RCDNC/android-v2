@@ -108,10 +108,38 @@ class MainActivity : ComponentActivity() {
                         // TODO: Implementar esqueci minha senha
                     },
                     onGoogleLoginClick = {
-                        // TODO: Implementar Google login
+                        scope.launch {
+                            isLoading = true
+                            errorMessage = null
+                            
+                            // Simula login com Google para demo
+                            val success = authManager.demoLogin("google@demo.com", "google_token")
+                            
+                            if (success) {
+                                currentScreen = AppScreen.MAIN
+                            } else {
+                                errorMessage = "Erro no login com Google"
+                            }
+                            
+                            isLoading = false
+                        }
                     },
                     onFacebookLoginClick = {
-                        // TODO: Implementar Facebook login
+                        scope.launch {
+                            isLoading = true
+                            errorMessage = null
+                            
+                            // Simula login com Facebook para demo
+                            val success = authManager.demoLogin("facebook@demo.com", "facebook_token")
+                            
+                            if (success) {
+                                currentScreen = AppScreen.MAIN
+                            } else {
+                                errorMessage = "Erro no login com Facebook"
+                            }
+                            
+                            isLoading = false
+                        }
                     },
                     isLoading = isLoading,
                     errorMessage = errorMessage
