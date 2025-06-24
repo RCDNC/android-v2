@@ -14,8 +14,8 @@ val CafezinhoPrimary = Color(CafezinhoColors.PRIMARY)
 val CafezinhoSecondary = Color(CafezinhoColors.SUPERLIKE_BLUE)
 val CafezinhoOnPrimary = Color(CafezinhoColors.BACKGROUND_LIGHT)
 
-// Tertiary brand colors
-val CafezinhoTertiary = Color(CafezinhoColors.MATCH_PURPLE)
+// Secondary brand colors
+val CafezinhoSecondary = Color(CafezinhoColors.MATCH_PURPLE)
 val CafezinhoOnSecondary = Color(CafezinhoColors.BACKGROUND_LIGHT)
 
 // Background colors
