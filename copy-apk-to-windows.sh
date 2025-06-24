@@ -69,7 +69,7 @@ if %errorlevel% == 0 (
 
 :START_APP
 echo 📱 Starting app...
-adb shell am start -n com.rcdnc.cafezinho/.MainActivity
+adb shell am start -n com.rcdnc.cafezinho.debug/.MainActivity
 
 :END
 echo.
