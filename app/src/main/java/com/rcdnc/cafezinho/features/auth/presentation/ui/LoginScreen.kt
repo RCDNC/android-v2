@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -165,6 +166,86 @@ fun LoginScreen(
                         enabled = !isLoading && email.isNotBlank() && password.isNotBlank(),
                         modifier = Modifier.fillMaxWidth()
                     )
+                    
+                    // Divider
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Divider(modifier = Modifier.weight(1f))
+                        Text(
+                            text = "  ou  ",
+                            color = CafezinhoOnSurfaceVariant,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
+                        Divider(modifier = Modifier.weight(1f))
+                    }
+                    
+                    // Social Login Buttons
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        // Google Login Button
+                        OutlinedButton(
+                            onClick = onGoogleLoginClick,
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !isLoading,
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = CafezinhoOnSurface
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.AccountCircle,
+                                contentDescription = null,
+                                tint = CafezinhoPrimary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Continuar com Google")
+                        }
+                        
+                        // Facebook Login Button
+                        OutlinedButton(
+                            onClick = onFacebookLoginClick,
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !isLoading,
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = CafezinhoOnSurface
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Face,
+                                contentDescription = null,
+                                tint = Color(0xFF1877F2), // Facebook blue
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Continuar com Facebook")
+                        }
+                        
+                        // Bypass/Demo Button
+                        OutlinedButton(
+                            onClick = {
+                                onLoginClick("demo@cafezinho.com", "123456", true)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !isLoading,
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = CafezinhoSecondary
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.PlayArrow,
+                                contentDescription = null,
+                                tint = CafezinhoSecondary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Bypass - Entrar como Demo")
+                        }
+                    }
                     
                     // Demo Info
                     Card(

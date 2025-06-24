@@ -1,0 +1,382 @@
+Index: app/src/main/java/com/rcdnc/cafezinho/features/main/presentation/ui/MainAppScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.rcdnc.cafezinho.features.main.presentation.ui\r\n\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.layout.*\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.material.icons.Icons\r\nimport androidx.compose.material.icons.filled.*\r\nimport androidx.compose.material.icons.outlined.*\r\nimport androidx.compose.material3.*\r\nimport androidx.compose.runtime.*\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Brush\r\nimport androidx.compose.ui.graphics.vector.ImageVector\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.text.style.TextAlign\r\nimport androidx.compose.ui.tooling.preview.Preview\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.navigation.NavDestination.Companion.hierarchy\r\nimport androidx.navigation.NavGraph.Companion.findStartDestination\r\nimport androidx.navigation.compose.currentBackStackEntryAsState\r\nimport androidx.navigation.compose.rememberNavController\r\nimport com.rcdnc.cafezinho.navigation.CafezinhoNavHost\r\nimport com.rcdnc.cafezinho.navigation.CafezinhoNavigation\r\nimport com.rcdnc.cafezinho.ui.components.CafezinhoButton\r\nimport com.rcdnc.cafezinho.ui.theme.CafezinhoTheme\r\n\r\n// Navigation items para BottomNav\r\ndata class NavigationItem(\r\n    val title: String,\r\n    val selectedIcon: ImageVector,\r\n    val unselectedIcon: ImageVector,\r\n    val route: String\r\n)\r\n\r\nval navigationItems = listOf(\r\n    NavigationItem(\r\n        title = \"Descobrir\",\r\n        selectedIcon = Icons.Filled.Favorite,\r\n        unselectedIcon = Icons.Outlined.FavoriteBorder,\r\n        route = CafezinhoNavigation.SWIPE\r\n    ),\r\n    NavigationItem(\r\n        title = \"Matches\",\r\n        selectedIcon = Icons.Filled.Email,\r\n        unselectedIcon = Icons.Outlined.Email,\r\n        route = CafezinhoNavigation.MATCHES\r\n    ),\r\n    NavigationItem(\r\n        title = \"Chat\",\r\n        selectedIcon = Icons.Filled.Email,\r\n        unselectedIcon = Icons.Outlined.Email,\r\n        route = CafezinhoNavigation.CHAT_LIST\r\n    ),\r\n    NavigationItem(\r\n        title = \"Perfil\",\r\n        selectedIcon = Icons.Filled.Person,\r\n        unselectedIcon = Icons.Outlined.Person,\r\n        route = CafezinhoNavigation.PROFILE\r\n    )\r\n)\r\n\r\n/**\r\n * Main App Screen - Com Navigation integrada\r\n * Mostra a estrutura principal do app com navegação completa\r\n */\r\n@OptIn(ExperimentalMaterial3Api::class)\r\n@Composable\r\nfun MainAppScreen(\r\n    onLogout: () -> Unit = {}\r\n) {\r\n    val navController = rememberNavController()\r\n    val navBackStackEntry by navController.currentBackStackEntryAsState()\r\n    val currentDestination = navBackStackEntry?.destination\r\n    \r\n    // Encontra o item de navegação atual\r\n    val currentNavigationItem = navigationItems.find { item ->\r\n        currentDestination?.hierarchy?.any { it.route == item.route } == true\r\n    } ?: navigationItems.first()\r\n    \r\n    Scaffold(\r\n        topBar = {\r\n            TopAppBar(\r\n                title = {\r\n                    Text(\r\n                        text = \"☕ ${currentNavigationItem.title}\",\r\n                        style = MaterialTheme.typography.headlineSmall.copy(\r\n                            fontWeight = FontWeight.Bold\r\n                        )\r\n                    )\r\n                },\r\n                actions = {\r\n                    IconButton(onClick = onLogout) {\r\n                        Icon(\r\n                            imageVector = Icons.Default.Settings,\r\n                            contentDescription = \"Configurações\"\r\n                        )\r\n                    }\r\n                }\r\n            )\r\n        },\r\n        bottomBar = {\r\n            NavigationBar {\r\n                navigationItems.forEach { item ->\r\n                    NavigationBarItem(\r\n                        icon = {\r\n                            val isSelected = currentDestination?.hierarchy?.any { \r\n                                it.route == item.route \r\n                            } == true\r\n                            Icon(\r\n                                imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,\r\n                                contentDescription = item.title\r\n                            )\r\n                        },\r\n                        label = { Text(item.title) },\r\n                        selected = currentDestination?.hierarchy?.any { \r\n                            it.route == item.route \r\n                        } == true,\r\n                        onClick = {\r\n                            navController.navigate(item.route) {\r\n                                // Pop up to the start destination to avoid building up a large stack\r\n                                popUpTo(navController.graph.findStartDestination().id) {\r\n                                    saveState = true\r\n                                }\r\n                                // Avoid multiple copies of the same destination\r\n                                launchSingleTop = true\r\n                                // Restore state when reselecting a previously selected item\r\n                                restoreState = true\r\n                            }\r\n                        }\r\n                    )\r\n                }\r\n            }\r\n        }\r\n    ) { paddingValues ->\r\n        // NavHost com todas as telas\r\n        CafezinhoNavHost(\r\n            navController = navController,\r\n            modifier = Modifier.padding(paddingValues)\r\n        )\r\n    }\r\n}\r\n\r\n// Conteúdo das tabs antigas removido - agora usamos navegação real com as features implementadas\r\n\r\n@Preview(showBackground = true)\r\n@Composable\r\nfun MainAppScreenPreview() {\r\n    CafezinhoTheme {\r\n        MainAppScreen()\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/rcdnc/cafezinho/features/main/presentation/ui/MainAppScreen.kt b/app/src/main/java/com/rcdnc/cafezinho/features/main/presentation/ui/MainAppScreen.kt
+--- a/app/src/main/java/com/rcdnc/cafezinho/features/main/presentation/ui/MainAppScreen.kt	(revision fccefae5fcb066e9271e25090af1361d9966296e)
++++ b/app/src/main/java/com/rcdnc/cafezinho/features/main/presentation/ui/MainAppScreen.kt	(date 1750686524409)
+@@ -16,12 +16,6 @@
+ import androidx.compose.ui.text.style.TextAlign
+ import androidx.compose.ui.tooling.preview.Preview
+ import androidx.compose.ui.unit.dp
+-import androidx.navigation.NavDestination.Companion.hierarchy
+-import androidx.navigation.NavGraph.Companion.findStartDestination
+-import androidx.navigation.compose.currentBackStackEntryAsState
+-import androidx.navigation.compose.rememberNavController
+-import com.rcdnc.cafezinho.navigation.CafezinhoNavHost
+-import com.rcdnc.cafezinho.navigation.CafezinhoNavigation
+ import com.rcdnc.cafezinho.ui.components.CafezinhoButton
+ import com.rcdnc.cafezinho.ui.theme.CafezinhoTheme
+ 
+@@ -38,52 +32,45 @@
+         title = "Descobrir",
+         selectedIcon = Icons.Filled.Favorite,
+         unselectedIcon = Icons.Outlined.FavoriteBorder,
+-        route = CafezinhoNavigation.SWIPE
++        route = "swipe"
+     ),
+     NavigationItem(
+         title = "Matches",
+-        selectedIcon = Icons.Filled.Email,
+-        unselectedIcon = Icons.Outlined.Email,
+-        route = CafezinhoNavigation.MATCHES
++        selectedIcon = Icons.Filled.Message,
++        unselectedIcon = Icons.Outlined.Message,
++        route = "matches"
+     ),
+     NavigationItem(
+         title = "Chat",
+-        selectedIcon = Icons.Filled.Email,
+-        unselectedIcon = Icons.Outlined.Email,
+-        route = CafezinhoNavigation.CHAT_LIST
++        selectedIcon = Icons.Filled.Chat,
++        unselectedIcon = Icons.Outlined.Chat,
++        route = "chat"
+     ),
+     NavigationItem(
+         title = "Perfil",
+         selectedIcon = Icons.Filled.Person,
+         unselectedIcon = Icons.Outlined.Person,
+-        route = CafezinhoNavigation.PROFILE
++        route = "profile"
+     )
+ )
+ 
+ /**
+- * Main App Screen - Com Navigation integrada
+- * Mostra a estrutura principal do app com navegação completa
++ * Main App Screen - Com Bottom Navigation
++ * Mostra a estrutura principal do app
+  */
+ @OptIn(ExperimentalMaterial3Api::class)
+ @Composable
+ fun MainAppScreen(
+     onLogout: () -> Unit = {}
+ ) {
+-    val navController = rememberNavController()
+-    val navBackStackEntry by navController.currentBackStackEntryAsState()
+-    val currentDestination = navBackStackEntry?.destination
+-    
+-    // Encontra o item de navegação atual
+-    val currentNavigationItem = navigationItems.find { item ->
+-        currentDestination?.hierarchy?.any { it.route == item.route } == true
+-    } ?: navigationItems.first()
++    var selectedTab by remember { mutableIntStateOf(0) }
+     
+     Scaffold(
+         topBar = {
+             TopAppBar(
+                 title = {
+                     Text(
+-                        text = "☕ ${currentNavigationItem.title}",
++                        text = "☕ ${navigationItems[selectedTab].title}",
+                         style = MaterialTheme.typography.headlineSmall.copy(
+                             fontWeight = FontWeight.Bold
+                         )
+@@ -101,47 +88,251 @@
+         },
+         bottomBar = {
+             NavigationBar {
+-                navigationItems.forEach { item ->
++                navigationItems.forEachIndexed { index, item ->
+                     NavigationBarItem(
+                         icon = {
+-                            val isSelected = currentDestination?.hierarchy?.any { 
+-                                it.route == item.route 
+-                            } == true
+                             Icon(
+-                                imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
++                                imageVector = if (selectedTab == index) item.selectedIcon else item.unselectedIcon,
+                                 contentDescription = item.title
+                             )
+                         },
+                         label = { Text(item.title) },
+-                        selected = currentDestination?.hierarchy?.any { 
+-                            it.route == item.route 
+-                        } == true,
+-                        onClick = {
+-                            navController.navigate(item.route) {
+-                                // Pop up to the start destination to avoid building up a large stack
+-                                popUpTo(navController.graph.findStartDestination().id) {
+-                                    saveState = true
+-                                }
+-                                // Avoid multiple copies of the same destination
+-                                launchSingleTop = true
+-                                // Restore state when reselecting a previously selected item
+-                                restoreState = true
+-                            }
+-                        }
++                        selected = selectedTab == index,
++                        onClick = { selectedTab = index }
+                     )
+                 }
+             }
+         }
+     ) { paddingValues ->
+-        // NavHost com todas as telas
+-        CafezinhoNavHost(
+-            navController = navController,
+-            modifier = Modifier.padding(paddingValues)
+-        )
++        // Conteúdo baseado na tab selecionada
++        when (selectedTab) {
++            0 -> SwipeTabContent(paddingValues)
++            1 -> MatchesTabContent(paddingValues)
++            2 -> ChatTabContent(paddingValues)
++            3 -> ProfileTabContent(paddingValues, onLogout)
++        }
++    }
++}
++
++@Composable
++private fun SwipeTabContent(paddingValues: PaddingValues) {
++    Box(
++        modifier = Modifier
++            .fillMaxSize()
++            .padding(paddingValues)
++            .background(
++                Brush.verticalGradient(
++                    colors = listOf(
++                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
++                        MaterialTheme.colorScheme.background
++                    )
++                )
++            ),
++        contentAlignment = Alignment.Center
++    ) {
++        Column(
++            horizontalAlignment = Alignment.CenterHorizontally,
++            modifier = Modifier.padding(32.dp)
++        ) {
++            Icon(
++                imageVector = Icons.Default.Favorite,
++                contentDescription = null,
++                modifier = Modifier.size(80.dp),
++                tint = MaterialTheme.colorScheme.primary
++            )
++            
++            Spacer(modifier = Modifier.height(24.dp))
++            
++            Text(
++                text = "💖 Descobrir",
++                style = MaterialTheme.typography.headlineMedium.copy(
++                    fontWeight = FontWeight.Bold
++                ),
++                color = MaterialTheme.colorScheme.onBackground
++            )
++            
++            Spacer(modifier = Modifier.height(16.dp))
++            
++            Text(
++                text = "Aqui você vai encontrar pessoas incríveis! Deslize para curtir ou passar.",
++                style = MaterialTheme.typography.bodyLarge,
++                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
++                textAlign = TextAlign.Center
++            )
++            
++            Spacer(modifier = Modifier.height(32.dp))
++            
++            Text(
++                text = "🚧 Em desenvolvimento - Issue #2918",
++                style = MaterialTheme.typography.bodyMedium,
++                color = MaterialTheme.colorScheme.primary,
++                textAlign = TextAlign.Center
++            )
++        }
++    }
++}
++
++@Composable
++private fun MatchesTabContent(paddingValues: PaddingValues) {
++    Box(
++        modifier = Modifier
++            .fillMaxSize()
++            .padding(paddingValues)
++            .background(MaterialTheme.colorScheme.background),
++        contentAlignment = Alignment.Center
++    ) {
++        Column(
++            horizontalAlignment = Alignment.CenterHorizontally,
++            modifier = Modifier.padding(32.dp)
++        ) {
++            Icon(
++                imageVector = Icons.Default.Message,
++                contentDescription = null,
++                modifier = Modifier.size(80.dp),
++                tint = MaterialTheme.colorScheme.secondary
++            )
++            
++            Spacer(modifier = Modifier.height(24.dp))
++            
++            Text(
++                text = "💕 Matches",
++                style = MaterialTheme.typography.headlineMedium.copy(
++                    fontWeight = FontWeight.Bold
++                ),
++                color = MaterialTheme.colorScheme.onBackground
++            )
++            
++            Spacer(modifier = Modifier.height(16.dp))
++            
++            Text(
++                text = "Suas conexões especiais aparecem aqui! Quando alguém curte você de volta, é match!",
++                style = MaterialTheme.typography.bodyLarge,
++                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
++                textAlign = TextAlign.Center
++            )
++            
++            Spacer(modifier = Modifier.height(32.dp))
++            
++            Text(
++                text = "🚧 Em desenvolvimento - Issue #2923",
++                style = MaterialTheme.typography.bodyMedium,
++                color = MaterialTheme.colorScheme.secondary,
++                textAlign = TextAlign.Center
++            )
++        }
++    }
++}
++
++@Composable
++private fun ChatTabContent(paddingValues: PaddingValues) {
++    Box(
++        modifier = Modifier
++            .fillMaxSize()
++            .padding(paddingValues)
++            .background(MaterialTheme.colorScheme.background),
++        contentAlignment = Alignment.Center
++    ) {
++        Column(
++            horizontalAlignment = Alignment.CenterHorizontally,
++            modifier = Modifier.padding(32.dp)
++        ) {
++            Icon(
++                imageVector = Icons.Default.Chat,
++                contentDescription = null,
++                modifier = Modifier.size(80.dp),
++                tint = MaterialTheme.colorScheme.tertiary
++            )
++            
++            Spacer(modifier = Modifier.height(24.dp))
++            
++            Text(
++                text = "💬 Chat",
++                style = MaterialTheme.typography.headlineMedium.copy(
++                    fontWeight = FontWeight.Bold
++                ),
++                color = MaterialTheme.colorScheme.onBackground
++            )
++            
++            Spacer(modifier = Modifier.height(16.dp))
++            
++            Text(
++                text = "Converse com seus matches! Mande mensagens, áudios, GIFs e muito mais.",
++                style = MaterialTheme.typography.bodyLarge,
++                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
++                textAlign = TextAlign.Center
++            )
++            
++            Spacer(modifier = Modifier.height(32.dp))
++            
++            Text(
++                text = "🚧 Em desenvolvimento - Issue #2921",
++                style = MaterialTheme.typography.bodyMedium,
++                color = MaterialTheme.colorScheme.tertiary,
++                textAlign = TextAlign.Center
++            )
++        }
+     }
+ }
+ 
+-// Conteúdo das tabs antigas removido - agora usamos navegação real com as features implementadas
++@Composable
++private fun ProfileTabContent(paddingValues: PaddingValues, onLogout: () -> Unit) {
++    Box(
++        modifier = Modifier
++            .fillMaxSize()
++            .padding(paddingValues)
++            .background(MaterialTheme.colorScheme.background),
++        contentAlignment = Alignment.Center
++    ) {
++        Column(
++            horizontalAlignment = Alignment.CenterHorizontally,
++            modifier = Modifier.padding(32.dp)
++        ) {
++            Icon(
++                imageVector = Icons.Default.Person,
++                contentDescription = null,
++                modifier = Modifier.size(80.dp),
++                tint = MaterialTheme.colorScheme.primary
++            )
++            
++            Spacer(modifier = Modifier.height(24.dp))
++            
++            Text(
++                text = "👤 Perfil",
++                style = MaterialTheme.typography.headlineMedium.copy(
++                    fontWeight = FontWeight.Bold
++                ),
++                color = MaterialTheme.colorScheme.onBackground
++            )
++            
++            Spacer(modifier = Modifier.height(16.dp))
++            
++            Text(
++                text = "Gerencie seu perfil, fotos e configurações para se destacar!",
++                style = MaterialTheme.typography.bodyLarge,
++                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
++                textAlign = TextAlign.Center
++            )
++            
++            Spacer(modifier = Modifier.height(32.dp))
++            
++            Text(
++                text = "🚧 Em desenvolvimento - Issue #2922",
++                style = MaterialTheme.typography.bodyMedium,
++                color = MaterialTheme.colorScheme.primary,
++                textAlign = TextAlign.Center
++            )
++            
++            Spacer(modifier = Modifier.height(48.dp))
++            
++            // Logout button
++            CafezinhoButton(
++                text = "Fazer Logout",
++                onClick = onLogout,
++                modifier = Modifier.fillMaxWidth()
++            )
++        }
++    }
++}
+ 
+ @Preview(showBackground = true)
+ @Composable
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_21\" default=\"true\" project-jdk-name=\"jbr-21\" project-jdk-type=\"JavaSDK\" />\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision fccefae5fcb066e9271e25090af1361d9966296e)
++++ b/.idea/misc.xml	(date 1750686524468)
+@@ -1,4 +1,3 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="jbr-21" project-jdk-type="JavaSDK" />
+ </project>
+\ No newline at end of file

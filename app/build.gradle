@@ -156,9 +156,9 @@ dependencies {
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1'
     testImplementation 'app.cash.turbine:turbine:1.2.0'
     
-    // MockK for better Kotlin mocking - Updated
-    testImplementation 'io.mockk:mockk:1.13.15'
-    testImplementation 'io.mockk:mockk-android:1.13.15'
+    // MockK for better Kotlin mocking - Updated to available version
+    testImplementation 'io.mockk:mockk:1.13.14'
+    testImplementation 'io.mockk:mockk-android:1.13.14'
     
     // MockWebServer for API integration tests - Updated
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'

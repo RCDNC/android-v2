@@ -1,7 +1,6 @@
-package com.rcdnc.cafezinho.core.auth
+package com.rcdnc.cafezinho.core.preferences
 
 import android.content.Context
-import com.rcdnc.cafezinho.core.network.ApiConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,23 +9,17 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
- * Módulo Hilt para AuthManager
+ * Módulo Hilt para injeção de dependência das preferências
  */
 @Module
 @InstallIn(SingletonComponent::class)
-object AuthManagerModule {
+object PreferencesModule {
     
     @Provides
     @Singleton
-    fun provideAuthManager(
+    fun providePreferencesManager(
         @ApplicationContext context: Context
-    ): AuthManager {
-        return AuthManager(context)
-    }
-    
-    @Provides
-    @Singleton
-    fun provideApiConfig(): ApiConfig {
-        return ApiConfig()
+    ): PreferencesManager {
+        return PreferencesManager(context)
     }
 }

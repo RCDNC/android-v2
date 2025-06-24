@@ -33,14 +33,9 @@ fun SplashScreen(
     LaunchedEffect(Unit) {
         delay(2000)
         
-        // TODO: Verificar se usuário está logado
-        val isLoggedIn = false // Placeholder - implementar verificação real
-        
-        if (isLoggedIn) {
-            onNavigateToMain()
-        } else {
-            onNavigateToOnboarding()
-        }
+        // Por agora, sempre vai para onboarding/login
+        // A lógica de autenticação será verificada no MainActivity
+        onNavigateToOnboarding()
     }
     
     Box(
