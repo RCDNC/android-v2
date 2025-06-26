@@ -70,6 +70,7 @@ fun MainAppScreen(
     navController: NavHostController = rememberNavController()
 ) {
     var selectedTab by remember { mutableIntStateOf(0) }
+    var showSettingsDialog by remember { mutableStateOf(false) }
     
     // Observar mudanças de navegação para sincronizar tabs
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
@@ -95,7 +96,7 @@ fun MainAppScreen(
                     )
                 },
                 actions = {
-                    IconButton(onClick = onLogout) {
+                    IconButton(onClick = { showSettingsDialog = true }) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = "Configurações"
@@ -137,6 +138,36 @@ fun MainAppScreen(
             navController = navController,
             modifier = Modifier.padding(paddingValues),
             startDestination = navigationItems[selectedTab].route
+        )
+    }
+    
+    // Settings Dialog
+    if (showSettingsDialog) {
+        AlertDialog(
+            onDismissRequest = { showSettingsDialog = false },
+            title = { Text("Configurações") },
+            text = {
+                Column {
+                    Text("Versão: 1.0.0 (Demo)")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Usuário: João Demo")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("ID: 1")
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { 
+                    showSettingsDialog = false
+                    onLogout()
+                }) {
+                    Text("Sair", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showSettingsDialog = false }) {
+                    Text("Fechar")
+                }
+            }
         )
     }
 }

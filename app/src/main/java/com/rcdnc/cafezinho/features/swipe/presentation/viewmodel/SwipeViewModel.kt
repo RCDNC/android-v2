@@ -325,6 +325,7 @@ class SwipeViewModel @Inject constructor(
     
     // Auto-load on init
     init {
+        android.util.Log.d("SwipeViewModel", "Init SwipeViewModel with userId: $currentUserId")
         loadUserMetrics()
         loadUsers()
     }

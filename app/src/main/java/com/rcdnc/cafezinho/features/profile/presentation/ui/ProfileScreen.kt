@@ -14,6 +14,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.rcdnc.cafezinho.features.profile.presentation.viewmodel.ProfileIntent
+import com.rcdnc.cafezinho.features.profile.presentation.viewmodel.ProfileViewModel
 import com.rcdnc.cafezinho.ui.components.CafezinhoButton
 // import com.rcdnc.cafezinho.ui.components.ComponentSize
 import com.rcdnc.cafezinho.ui.components.UserImage
@@ -28,13 +32,22 @@ fun ProfileScreen(
     onEditClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    // TODO: Usar ProfileViewModel real
-    val userName = "Demo User"
-    val userAge = 25
-    val userBio = "Apaixonado por café e boas conversas! ☕"
-    val userPhotos = emptyList<String>()
+    val profile by viewModel.profile.collectAsStateWithLifecycle()
+    val profileStats by viewModel.profileStats.collectAsStateWithLifecycle()
+    
+    // Load profile on first composition
+    LaunchedEffect(Unit) {
+        viewModel.handleIntent(ProfileIntent.LoadProfile("1")) // Demo user
+        viewModel.handleIntent(ProfileIntent.LoadProfileStats("1"))
+    }
+    
+    val userName = profile?.let { "${it.firstName} ${it.lastName}" } ?: "Carregando..."
+    val userAge = profile?.age ?: 0
+    val userBio = profile?.bio ?: ""
+    val userPhotos = profile?.photos?.map { it.url } ?: emptyList()
     
     Column(
         modifier = modifier
@@ -106,44 +119,89 @@ fun ProfileScreen(
         
         Spacer(modifier = Modifier.height(32.dp))
         
-        // Status Message
+        // Profile stats
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp),
+                .padding(horizontal = 16.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
             )
         ) {
             Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.padding(16.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(32.dp)
+                Text(
+                    text = "Estatísticas",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 12.dp)
                 )
                 
-                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    StatItem(
+                        label = "Visualizações",
+                        value = profileStats?.profileViews?.toString() ?: "0"
+                    )
+                    StatItem(
+                        label = "Curtidas",
+                        value = profileStats?.likes?.toString() ?: "0"
+                    )
+                    StatItem(
+                        label = "Matches",
+                        value = profileStats?.matches?.toString() ?: "0"
+                    )
+                }
                 
-                Text(
-                    text = "✅ Perfil implementado!",
-                    style = MaterialTheme.typography.bodyMedium,
+                Spacer(modifier = Modifier.height(12.dp))
+                
+                // Profile completion
+                LinearProgressIndicator(
+                    progress = (profile?.profileCompletion ?: 0) / 100f,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .clip(CircleShape),
                     color = MaterialTheme.colorScheme.primary,
-                    textAlign = TextAlign.Center
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant
                 )
                 
                 Text(
-                    text = "Integração com API em desenvolvimento...",
+                    text = "Perfil ${profile?.profileCompletion ?: 0}% completo",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center
+                    modifier = Modifier.padding(top = 4.dp)
                 )
             }
         }
         
         Spacer(modifier = Modifier.weight(1f))
+    }
+}
+
+@Composable
+private fun StatItem(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = value,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
